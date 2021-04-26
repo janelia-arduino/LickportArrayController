@@ -16,7 +16,6 @@ LickportArrayController::LickportArrayController()
 
 LickportArrayController::~LickportArrayController()
 {
-  // disable();
 }
 
 void LickportArrayController::setup()
@@ -31,6 +30,7 @@ void LickportArrayController::setup()
 
   // Pin Setup
   pinMode(constants::sensor_pin,INPUT_PULLUP);
+  pinMode(constants::led_pin,OUTPUT);
 
   // Pins
 

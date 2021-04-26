@@ -14,6 +14,8 @@
 #include <ConstantVariable.h>
 #include <Functor.h>
 
+#include <EventController.h>
+
 #include <ModularServer.h>
 #include <ModularDeviceBase.h>
 

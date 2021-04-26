@@ -31,6 +31,7 @@ extern const modular_server::HardwareInfo hardware_info;
 
 // Pins
 extern const size_t sensor_pin;
+extern const size_t led_pin;
 
 // Units
 

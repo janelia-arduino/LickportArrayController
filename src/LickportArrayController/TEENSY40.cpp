@@ -23,6 +23,7 @@ const modular_server::HardwareInfo hardware_info =
 
 // Pins
 const size_t sensor_pin = 2;
+const size_t led_pin = 2;
 
 // Units
 
