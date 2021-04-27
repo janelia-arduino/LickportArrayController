@@ -29,9 +29,16 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
+enum{EVENT_COUNT_MAX=32};
+
+extern const uint32_t end_output_delay;
+
 // Pins
-extern const size_t sensor_pin;
-extern const size_t led_pin;
+extern ConstantString input_pin_name;
+extern const size_t input_pin_number;
+
+extern ConstantString output_pin_name;
+extern const size_t output_pin_number;
 
 // Units
 

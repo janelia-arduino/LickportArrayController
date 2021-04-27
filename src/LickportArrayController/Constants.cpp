@@ -26,7 +26,12 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"lickport_array_controller");
 
+const uint32_t end_output_delay = 100;
+
 // Pins
+CONSTANT_STRING(input_pin_name,"input");
+
+CONSTANT_STRING(output_pin_name,"output");
 
 // Units
 
@@ -37,6 +42,7 @@ CONSTANT_STRING(hardware_name,"lickport_array_controller");
 // Functions
 
 // Callbacks
+CONSTANT_STRING(trigger_output_callback_name,"triggerOutput");
 
 // Errors
 }

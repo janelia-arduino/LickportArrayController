@@ -38,7 +38,13 @@ private:
   modular_server::Function functions_[lickport_array_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[lickport_array_controller::constants::CALLBACK_COUNT_MAX];
 
+  EventController<lickport_array_controller::constants::EVENT_COUNT_MAX> event_controller_;
+
   // Handlers
+  void triggerOutputHandler(modular_server::Pin * pin_ptr);
+
+  void endOutputHandler(int output_index);
+
 };
 
 #endif

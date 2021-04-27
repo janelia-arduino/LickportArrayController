@@ -30,6 +30,7 @@ enum{PIN_COUNT_MAX=2};
 // Functions
 
 // Callbacks
+extern ConstantString trigger_output_callback_name;
 
 // Errors
 }
