@@ -16,6 +16,11 @@ namespace lickport_array_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
+enum {PIN_COUNT_MAX=1};
+
+enum {CHANNEL_COUNT=12};
+
+extern const size_t channel_pins[CHANNEL_COUNT];
 
 // Pins
 

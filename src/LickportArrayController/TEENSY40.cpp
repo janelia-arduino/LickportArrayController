@@ -13,6 +13,32 @@ namespace lickport_array_controller
 {
 namespace constants
 {
+const modular_server::HardwareInfo hardware_info =
+{
+  .name_ptr=&hardware_name,
+  .part_number=2025,
+  .version_major=1,
+  .version_minor=1,
+};
+
+const long channel_count = CHANNEL_COUNT;
+
+const size_t channel_pins[CHANNEL_COUNT] =
+{
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11
+};
+
 // Pins
 
 // Units
