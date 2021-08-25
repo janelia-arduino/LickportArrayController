@@ -16,7 +16,6 @@ namespace lickport_array_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PIN_COUNT_MAX=2};
 
 // Pins
 
@@ -30,7 +29,6 @@ enum{PIN_COUNT_MAX=2};
 // Functions
 
 // Callbacks
-extern ConstantString trigger_output_callback_name;
 
 // Errors
 }
