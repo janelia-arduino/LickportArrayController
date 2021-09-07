@@ -44,7 +44,7 @@ void LickportArrayController::setup()
 
   modular_server::Pin & lick_detected_pin = modular_server_.createPin(constants::lick_detected_pin_name,
     constants::lick_detected_pin_number);
-  lick_detected_pin.setModeDigitalOutput();
+  lick_detected_pin.setModePulseRising();
 
   modular_server::Pin & sync_pin = modular_server_.createPin(constants::sync_pin_name,
     constants::sync_pin_number);
@@ -71,11 +71,23 @@ void LickportArrayController::setup()
   // Functions
 
   // Callbacks
+  modular_server::Callback & check_lick_status_callback = modular_server_.createCallback(constants::check_lick_status_callback_name);
+  check_lick_status_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::checkLickStatusHandler));
+  check_lick_status_callback.attachTo(change_pin,modular_server::constants::pin_mode_interrupt_falling);
 
   setAllChannelsOff();
 
   lick_sensor_.begin();
   lick_sensor_.reset();
+  check_lick_status_ = false;
+}
+
+void LickportArrayController::update()
+{
+  // Parent Update
+  DigitalController::update();
+
+  checkLickStatus();
 }
 
 double LickportArrayController::setChannelToPower(size_t channel,
@@ -92,4 +104,23 @@ double LickportArrayController::setChannelToPower(size_t channel,
     digitalWrite(constants::channel_pins[channel],LOW);
   }
   return power;
+}
+
+void LickportArrayController::checkLickStatus()
+{
+  if (check_lick_status_)
+  {
+    check_lick_status_ = false;
+    LickSensorStatus lick_sensor_status = lick_sensor_.getStatus();
+    if (lick_sensor_status.any_key_touched)
+    {
+      modular_server::Pin & lick_detected_pin = modular_server_.pin(constants::lick_detected_pin_name);
+      lick_detected_pin.setValue(constants::lick_detected_pulse_duration);
+    }
+  }
+}
+
+void LickportArrayController::checkLickStatusHandler(modular_server::Pin * pin_ptr)
+{
+  check_lick_status_ = true;
 }

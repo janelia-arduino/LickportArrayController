@@ -30,6 +30,7 @@ CONSTANT_STRING(hardware_name,"lickport_array_controller");
 CONSTANT_STRING(change_pin_name,"change");
 
 CONSTANT_STRING(lick_detected_pin_name,"lick_detected");
+const size_t lick_detected_pulse_duration = 200;
 
 CONSTANT_STRING(sync_pin_name,"sync");
 

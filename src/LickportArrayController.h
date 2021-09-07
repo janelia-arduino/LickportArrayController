@@ -28,6 +28,7 @@ class LickportArrayController : public DigitalController
 public:
   LickportArrayController();
   virtual void setup();
+  virtual void update();
 
 protected:
   virtual double setChannelToPower(size_t channel,
@@ -42,9 +43,14 @@ private:
   modular_server::Callback callbacks_[lickport_array_controller::constants::CALLBACK_COUNT_MAX];
 
   typedef AT42QT2120 LickSensor;
+  typedef AT42QT2120::Status LickSensorStatus;
   LickSensor lick_sensor_;
+  volatile bool check_lick_status_;
+
+  void checkLickStatus();
 
   // Handlers
+  void checkLickStatusHandler(modular_server::Pin * pin_ptr);
 };
 
 #endif

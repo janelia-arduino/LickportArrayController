@@ -37,6 +37,7 @@ extern const size_t change_pin_number;
 
 extern ConstantString lick_detected_pin_name;
 extern const size_t lick_detected_pin_number;
+extern const size_t lick_detected_pulse_duration;
 
 extern ConstantString sync_pin_name;
 extern const size_t sync_pin_number;
