@@ -32,6 +32,14 @@ extern const modular_server::HardwareInfo hardware_info;
 extern const long channel_count;
 
 // Pins
+extern ConstantString change_pin_name;
+extern const size_t change_pin_number;
+
+extern ConstantString lick_detected_pin_name;
+extern const size_t lick_detected_pin_number;
+
+extern ConstantString sync_pin_name;
+extern const size_t sync_pin_number;
 
 // Units
 
@@ -43,6 +51,7 @@ extern const long channel_count;
 // Functions
 
 // Callbacks
+extern ConstantString check_lick_status_callback_name;
 
 // Errors
 }

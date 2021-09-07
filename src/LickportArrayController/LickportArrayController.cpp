@@ -38,6 +38,17 @@ void LickportArrayController::setup()
     pins_);
 
   // Pins
+  modular_server::Pin & change_pin = modular_server_.createPin(constants::change_pin_name,
+    constants::change_pin_number);
+  change_pin.setModeDigitalInput();
+
+  modular_server::Pin & lick_detected_pin = modular_server_.createPin(constants::lick_detected_pin_name,
+    constants::lick_detected_pin_number);
+  lick_detected_pin.setModeDigitalOutput();
+
+  modular_server::Pin & sync_pin = modular_server_.createPin(constants::sync_pin_name,
+    constants::sync_pin_number);
+  sync_pin.setModePulseFalling();
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
@@ -62,6 +73,9 @@ void LickportArrayController::setup()
   // Callbacks
 
   setAllChannelsOff();
+
+  lick_sensor_.begin();
+  lick_sensor_.reset();
 }
 
 double LickportArrayController::setChannelToPower(size_t channel,

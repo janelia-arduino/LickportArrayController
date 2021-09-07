@@ -40,6 +40,11 @@ const size_t channel_pins[CHANNEL_COUNT] =
 };
 
 // Pins
+const size_t change_pin_number = 12;
+
+const size_t lick_detected_pin_number = 13;
+
+const size_t sync_pin_number = 14;
 
 // Units
 

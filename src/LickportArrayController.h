@@ -14,6 +14,8 @@
 #include <ConstantVariable.h>
 #include <Functor.h>
 
+#include <AT42QT2120.h>
+
 #include <ModularServer.h>
 #include <ModularDeviceBase.h>
 #include <DigitalController.h>
@@ -38,6 +40,9 @@ private:
   modular_server::Parameter parameters_[lickport_array_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Function functions_[lickport_array_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[lickport_array_controller::constants::CALLBACK_COUNT_MAX];
+
+  typedef AT42QT2120 LickSensor;
+  LickSensor lick_sensor_;
 
   // Handlers
 };

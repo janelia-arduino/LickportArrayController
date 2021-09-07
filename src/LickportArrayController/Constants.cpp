@@ -27,6 +27,11 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(hardware_name,"lickport_array_controller");
 
 // Pins
+CONSTANT_STRING(change_pin_name,"change");
+
+CONSTANT_STRING(lick_detected_pin_name,"lick_detected");
+
+CONSTANT_STRING(sync_pin_name,"sync");
 
 // Units
 
@@ -37,6 +42,7 @@ CONSTANT_STRING(hardware_name,"lickport_array_controller");
 // Functions
 
 // Callbacks
+CONSTANT_STRING(check_lick_status_callback_name,"checkLickStatus");
 
 // Errors
 }
