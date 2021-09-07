@@ -36,7 +36,8 @@ const size_t channel_pins[CHANNEL_COUNT] =
   8,
   9,
   10,
-  11
+  11,
+  14
 };
 
 // Pins
