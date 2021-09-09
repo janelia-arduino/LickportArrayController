@@ -65,10 +65,16 @@ void LickportArrayController::setup()
   channel_count_property.reenableFunctors();
 
   // Parameters
+  modular_server::Parameter & dispense_duration_parameter = modular_server_.createParameter(constants::dispense_duration_parameter_name);
+  dispense_duration_parameter.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
+  dispense_duration_parameter.setUnits(constants::ms_units);
 
   setChannelCountHandler();
 
   // Functions
+  modular_server::Function & dispense_all_for_duration_function = modular_server_.createFunction(constants::dispense_all_for_duration_function_name);
+  dispense_all_for_duration_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseAllForDurationHandler));
+  dispense_all_for_duration_function.addParameter(dispense_duration_parameter);
 
   // Callbacks
   modular_server::Callback & check_lick_status_callback = modular_server_.createCallback(constants::check_lick_status_callback_name);
@@ -88,6 +94,11 @@ void LickportArrayController::update()
   DigitalController::update();
 
   checkLickStatus();
+}
+
+void LickportArrayController::dispenseAllForDuration(uint32_t dispense_duration)
+{
+
 }
 
 double LickportArrayController::setChannelToPower(size_t channel,

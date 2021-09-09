@@ -48,8 +48,12 @@ extern const size_t sync_pin_number;
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 
 // Parameters
+extern ConstantString dispense_duration_parameter_name;
+extern const long dispense_duration_min;
+extern const long dispense_duration_max;
 
 // Functions
+extern ConstantString dispense_all_for_duration_function_name;
 
 // Callbacks
 extern ConstantString check_lick_status_callback_name;

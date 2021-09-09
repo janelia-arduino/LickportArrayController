@@ -30,9 +30,15 @@ public:
   virtual void setup();
   virtual void update();
 
+  typedef Array<long,lickport_array_controller::constants::CHANNEL_COUNT> Channels;
+
+  void dispenseAllForDuration(uint32_t dispense_duration);
+
 protected:
   virtual double setChannelToPower(size_t channel,
     double power);
+
+  Channels channelsBytesToArray(uint32_t channels_bytes);
 
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];
@@ -51,6 +57,8 @@ private:
 
   // Handlers
   void checkLickStatusHandler(modular_server::Pin * pin_ptr);
+
+  void dispenseAllForDurationHandler();
 };
 
 #endif

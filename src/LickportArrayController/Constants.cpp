@@ -39,8 +39,12 @@ CONSTANT_STRING(sync_pin_name,"sync");
 // Properties
 
 // Parameters
+CONSTANT_STRING(dispense_duration_parameter_name,"dispense_duration");
+const long dispense_duration_min = 1;
+const long dispense_duration_max = 2000000000;
 
 // Functions
+CONSTANT_STRING(dispense_all_for_duration_function_name,"dispenseAllForDuration");
 
 // Callbacks
 CONSTANT_STRING(check_lick_status_callback_name,"checkLickStatus");
