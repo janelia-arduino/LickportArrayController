@@ -106,7 +106,7 @@ void LickportArrayController::dispenseAllForDuration(uint32_t dispense_duration)
   addPwm(channels,
     constants::dispense_power,
     constants::dispense_delay,
-    dispense_duration*2,
+    dispense_duration,
     dispense_duration,
     constants::dispense_count);
 }
