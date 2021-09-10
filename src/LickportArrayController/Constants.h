@@ -29,6 +29,10 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
+extern const double dispense_power;
+extern const long dispense_delay;
+extern const long dispense_count;
+
 extern const long channel_count;
 
 // Pins

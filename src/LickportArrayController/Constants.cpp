@@ -26,6 +26,10 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"lickport_array_controller");
 
+const double dispense_power = digital_controller::constants::power_max;
+const long dispense_delay = 10;
+const long dispense_count = 1;
+
 // Pins
 CONSTANT_STRING(change_pin_name,"change");
 

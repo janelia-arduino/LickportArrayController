@@ -38,7 +38,7 @@ protected:
   virtual double setChannelToPower(size_t channel,
     double power);
 
-  Channels channelsBytesToArray(uint32_t channels_bytes);
+  // Channels channelsBytesToArray(uint32_t channels_bytes);
 
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];

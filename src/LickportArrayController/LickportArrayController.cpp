@@ -67,7 +67,7 @@ void LickportArrayController::setup()
   // Parameters
   modular_server::Parameter & dispense_duration_parameter = modular_server_.createParameter(constants::dispense_duration_parameter_name);
   dispense_duration_parameter.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
-  dispense_duration_parameter.setUnits(constants::ms_units);
+  dispense_duration_parameter.setUnits(digital_controller::constants::ms_units);
 
   setChannelCountHandler();
 
@@ -98,7 +98,17 @@ void LickportArrayController::update()
 
 void LickportArrayController::dispenseAllForDuration(uint32_t dispense_duration)
 {
-
+  uint32_t channels = 0;
+  for (uint8_t channel=0; channel<constants::channel_count; ++channel)
+  {
+    channels |= (1 << channel);
+  }
+  addPwm(channels,
+    constants::dispense_power,
+    constants::dispense_delay,
+    dispense_duration*2,
+    dispense_duration,
+    constants::dispense_count);
 }
 
 double LickportArrayController::setChannelToPower(size_t channel,
@@ -134,4 +144,11 @@ void LickportArrayController::checkLickStatus()
 void LickportArrayController::checkLickStatusHandler(modular_server::Pin * pin_ptr)
 {
   check_lick_status_ = true;
+}
+
+void LickportArrayController::dispenseAllForDurationHandler()
+{
+  long dispense_duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+  dispenseAllForDuration(dispense_duration);
 }
