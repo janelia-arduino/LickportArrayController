@@ -28,9 +28,9 @@ void LickportArrayController::setup()
   modular_server_.setDeviceName(constants::device_name);
 
   // Pin Setup
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  for (size_t lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
   {
-    pinMode(constants::channel_pins[channel],OUTPUT);
+    pinMode(constants::lickport_pins[lickport],OUTPUT);
   }
 
   // Add Hardware
@@ -60,21 +60,47 @@ void LickportArrayController::setup()
   // Properties
   modular_server::Property & channel_count_property = modular_server_.property(digital_controller::constants::channel_count_property_name);
   channel_count_property.disableFunctors();
-  channel_count_property.setDefaultValue(constants::channel_count);
-  channel_count_property.setRange(constants::channel_count,constants::channel_count);
+  channel_count_property.setDefaultValue(constants::lickport_count);
+  channel_count_property.setRange(constants::lickport_count,constants::lickport_count);
   channel_count_property.reenableFunctors();
 
   // Parameters
+  modular_server::Parameter & lickport_parameter = modular_server_.createParameter(constants::lickport_parameter_name);
+  lickport_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
+
+  modular_server::Parameter & lickports_parameter = modular_server_.createParameter(constants::lickports_parameter_name);
+  lickports_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
+  lickports_parameter.setArrayLengthRange(constants::lickports_array_length_min,constants::lickport_count-1);
+
   modular_server::Parameter & dispense_duration_parameter = modular_server_.createParameter(constants::dispense_duration_parameter_name);
   dispense_duration_parameter.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
   dispense_duration_parameter.setUnits(digital_controller::constants::ms_units);
 
+  modular_server::Parameter & dispense_durations_parameter = modular_server_.createParameter(constants::dispense_durations_parameter_name);
+  dispense_durations_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
+  dispense_durations_parameter.setArrayLengthRange(constants::dispense_durations_array_length_min,constants::lickport_count-1);
+
   setChannelCountHandler();
 
   // Functions
-  modular_server::Function & dispense_all_for_duration_function = modular_server_.createFunction(constants::dispense_all_for_duration_function_name);
-  dispense_all_for_duration_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseAllForDurationHandler));
-  dispense_all_for_duration_function.addParameter(dispense_duration_parameter);
+  modular_server::Function & dispense_lickport_for_duration_function = modular_server_.createFunction(constants::dispense_lickport_for_duration_function_name);
+  dispense_lickport_for_duration_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseLickportForDurationHandler));
+  dispense_lickport_for_duration_function.addParameter(lickport_parameter);
+  dispense_lickport_for_duration_function.addParameter(dispense_duration_parameter);
+
+  modular_server::Function & dispense_lickports_for_duration_function = modular_server_.createFunction(constants::dispense_lickports_for_duration_function_name);
+  dispense_lickports_for_duration_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseLickportsForDurationHandler));
+  dispense_lickports_for_duration_function.addParameter(lickports_parameter);
+  dispense_lickports_for_duration_function.addParameter(dispense_duration_parameter);
+
+  modular_server::Function & dispense_all_lickports_for_duration_function = modular_server_.createFunction(constants::dispense_all_lickports_for_duration_function_name);
+  dispense_all_lickports_for_duration_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseAllLickportsForDurationHandler));
+  dispense_all_lickports_for_duration_function.addParameter(dispense_duration_parameter);
+
+  modular_server::Function & dispense_lickports_for_durations_function = modular_server_.createFunction(constants::dispense_lickports_for_durations_function_name);
+  dispense_lickports_for_durations_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::dispenseLickportsForDurationsHandler));
+  dispense_lickports_for_durations_function.addParameter(lickports_parameter);
+  dispense_lickports_for_durations_function.addParameter(dispense_durations_parameter);
 
   // Callbacks
   modular_server::Callback & check_lick_status_callback = modular_server_.createCallback(constants::check_lick_status_callback_name);
@@ -96,14 +122,12 @@ void LickportArrayController::update()
   checkLickStatus();
 }
 
-void LickportArrayController::dispenseAllForDuration(uint32_t dispense_duration)
+void LickportArrayController::dispenseLickportForDuration(uint8_t lickport,
+  uint32_t dispense_duration)
 {
-  uint32_t channels = 0;
-  for (uint8_t channel=0; channel<constants::channel_count; ++channel)
-  {
-    channels |= (1 << channel);
-  }
-  addPwm(channels,
+  uint32_t lickports = 0;
+  lickports |= (1 << lickport);
+  addPwm(lickports,
     constants::dispense_power,
     constants::dispense_delay,
     dispense_duration,
@@ -111,20 +135,60 @@ void LickportArrayController::dispenseAllForDuration(uint32_t dispense_duration)
     constants::dispense_count);
 }
 
-double LickportArrayController::setChannelToPower(size_t channel,
+void LickportArrayController::dispenseAllLickportsForDuration(uint32_t dispense_duration)
+{
+  for (uint8_t lickport=0; lickport<constants::lickport_count; ++lickport)
+  {
+    dispenseLickportForDuration(lickport,dispense_duration);
+  }
+}
+
+void LickportArrayController::dispenseLickportsForDuration(const Lickports & lickports,
+  uint32_t dispense_duration)
+{
+  for (uint8_t lickport : lickports)
+  {
+    dispenseLickportForDuration(lickport,dispense_duration);
+  }
+}
+
+void LickportArrayController::dispenseLickportsForDurations(const Lickports & lickports,
+  const DispenseDurations dispense_durations)
+{
+  if (lickports.size() != dispense_durations.size())
+  {
+    return;
+  }
+  for (uint8_t index=0; index<lickports.size(); ++index)
+  {
+    dispenseLickportForDuration(lickports[index],dispense_durations[index]);
+  }
+}
+
+double LickportArrayController::setChannelToPower(size_t lickport,
   double power)
 {
   if (power > digital_controller::constants::power_mid)
   {
     power = digital_controller::constants::power_max;
-    digitalWrite(constants::channel_pins[channel],HIGH);
+    digitalWrite(constants::lickport_pins[lickport],HIGH);
   }
   else
   {
     power = digital_controller::constants::power_min;
-    digitalWrite(constants::channel_pins[channel],LOW);
+    digitalWrite(constants::lickport_pins[lickport],LOW);
   }
   return power;
+}
+
+LickportArrayController::Lickports LickportArrayController::jsonArrayToLickports(ArduinoJson::JsonArray lickports_json_array)
+{
+  Lickports lickports;
+  for (uint8_t lickport : lickports_json_array)
+  {
+    lickports.push_back(lickport);
+  }
+  return lickports;
 }
 
 void LickportArrayController::checkLickStatus()
@@ -146,9 +210,46 @@ void LickportArrayController::checkLickStatusHandler(modular_server::Pin * pin_p
   check_lick_status_ = true;
 }
 
-void LickportArrayController::dispenseAllForDurationHandler()
+void LickportArrayController::dispenseLickportForDurationHandler()
+{
+  long lickport;
+  modular_server_.parameter(constants::lickport_parameter_name).getValue(lickport);
+
+  long dispense_duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+
+  dispenseLickportForDuration(lickport,dispense_duration);
+}
+
+void LickportArrayController::dispenseLickportsForDurationHandler()
+{
+  ArduinoJson::JsonArray lickports_json_array;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports_json_array);
+  Lickports lickports = jsonArrayToLickports(lickports_json_array);
+
+  long dispense_duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+
+  dispenseLickportsForDuration(lickports,dispense_duration);
+}
+
+void LickportArrayController::dispenseLickportsForDurationsHandler()
+{
+  ArduinoJson::JsonArray lickports_json_array;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports_json_array);
+  Lickports lickports = jsonArrayToLickports(lickports_json_array);
+
+  ArduinoJson::JsonArray dispense_durations_json_array;
+  modular_server_.parameter(constants::dispense_durations_parameter_name).getValue(dispense_durations_json_array);
+  DispenseDurations dispense_durations = jsonArrayToDispenseDurations(dispense_durations_json_array);
+
+  dispenseLickportsForDuration(lickports,dispense_durations);
+}
+
+void LickportArrayController::dispenseAllLickportsForDurationHandler()
 {
   long dispense_duration;
   modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
-  dispenseAllForDuration(dispense_duration);
+
+  dispenseAllLickportsForDuration(dispense_duration);
 }

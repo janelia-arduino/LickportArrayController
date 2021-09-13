@@ -17,8 +17,8 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=1};
-enum{PARAMETER_COUNT_MAX=1};
-enum{FUNCTION_COUNT_MAX=1};
+enum{PARAMETER_COUNT_MAX=4};
+enum{FUNCTION_COUNT_MAX=4};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -33,7 +33,7 @@ extern const double dispense_power;
 extern const long dispense_delay;
 extern const long dispense_count;
 
-extern const long channel_count;
+extern const long lickport_count;
 
 // Pins
 extern ConstantString change_pin_name;
@@ -52,12 +52,24 @@ extern const size_t sync_pin_number;
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 
 // Parameters
+extern ConstantString lickport_parameter_name;
+extern const long lickport_min;
+
+extern ConstantString lickports_parameter_name;
+extern const long lickports_array_length_min;
+
 extern ConstantString dispense_duration_parameter_name;
 extern const long dispense_duration_min;
 extern const long dispense_duration_max;
 
+extern ConstantString dispense_durations_parameter_name;
+extern const long dispense_durations_array_length_min;
+
 // Functions
-extern ConstantString dispense_all_for_duration_function_name;
+extern ConstantString dispense_lickport_for_duration_function_name;
+extern ConstantString dispense_lickports_for_duration_function_name;
+extern ConstantString dispense_lickports_for_durations_function_name;
+extern ConstantString dispense_all_lickports_for_duration_function_name;
 
 // Callbacks
 extern ConstantString check_lick_status_callback_name;

@@ -43,12 +43,24 @@ CONSTANT_STRING(sync_pin_name,"sync");
 // Properties
 
 // Parameters
+CONSTANT_STRING(lickport_parameter_name,"lickport");
+const long lickport_min = 0;
+
+CONSTANT_STRING(lickports_parameter_name,"lickports");
+const long lickports_array_length_min = 1;
+
 CONSTANT_STRING(dispense_duration_parameter_name,"dispense_duration");
 const long dispense_duration_min = 1;
 const long dispense_duration_max = 2000000000;
 
+CONSTANT_STRING(dispense_durations_parameter_name,"dispense_durations");
+const long dispense_durations_array_length_min = 1;
+
 // Functions
-CONSTANT_STRING(dispense_all_for_duration_function_name,"dispenseAllForDuration");
+CONSTANT_STRING(dispense_lickport_for_duration_function_name,"dispenseLickportForDuration");
+CONSTANT_STRING(dispense_lickports_for_duration_function_name,"dispenseLickportsForDuration");
+CONSTANT_STRING(dispense_lickports_for_durations_function_name,"dispenseLickportsForDurations");
+CONSTANT_STRING(dispense_all_lickports_for_duration_function_name,"dispenseAllLickportsForDuration");
 
 // Callbacks
 CONSTANT_STRING(check_lick_status_callback_name,"checkLickStatus");

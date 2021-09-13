@@ -30,15 +30,22 @@ public:
   virtual void setup();
   virtual void update();
 
-  typedef Array<long,lickport_array_controller::constants::CHANNEL_COUNT> Channels;
+  typedef Array<uint8_t,lickport_array_controller::constants::LICKPORT_COUNT> Lickports;
+  typedef Array<uint32_t,lickport_array_controller::constants::LICKPORT_COUNT> DispenseDurations;
 
-  void dispenseAllForDuration(uint32_t dispense_duration);
+  void dispenseLickportForDuration(uint8_t lickport,
+    uint32_t dispense_duration);
+  void dispenseLickportsForDuration(const Lickports & lickports,
+    uint32_t dispense_duration);
+  void dispenseLickportsForDurations(const Lickports & lickports,
+    const DispenseDurations & dispense_durations);
+  void dispenseAllLickportsForDuration(uint32_t dispense_duration);
 
 protected:
-  virtual double setChannelToPower(size_t channel,
+  virtual double setChannelToPower(size_t lickport,
     double power);
 
-  // Channels channelsBytesToArray(uint32_t channels_bytes);
+  Lickports jsonArrayToLickports(ArduinoJson::JsonArray lickports_json_array);
 
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];
@@ -58,7 +65,10 @@ private:
   // Handlers
   void checkLickStatusHandler(modular_server::Pin * pin_ptr);
 
-  void dispenseAllForDurationHandler();
+  void dispenseLickportForDurationHandler();
+  void dispenseLickportsForDurationHandler();
+  void dispenseLickportsForDurationsHandler();
+  void dispenseAllLickportsForDurationHandler();
 };
 
 #endif

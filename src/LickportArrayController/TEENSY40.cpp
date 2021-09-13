@@ -21,9 +21,9 @@ const modular_server::HardwareInfo hardware_info =
   .version_minor=1,
 };
 
-const long channel_count = CHANNEL_COUNT;
+const long lickport_count = LICKPORT_COUNT;
 
-const size_t channel_pins[CHANNEL_COUNT] =
+const size_t lickport_pins[LICKPORT_COUNT] =
 {
   0,
   1,
