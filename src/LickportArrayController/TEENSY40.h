@@ -3,7 +3,7 @@
 //
 //
 // Authors:
-// Peter Polidoro peterpolidoro@gmail.com
+// Peter Polidoro peter@polidoro.io
 // ----------------------------------------------------------------------------
 #ifndef LICKPORT_ARRAY_CONTROLLER_TEENSY40_CONSTANTS_H
 #define LICKPORT_ARRAY_CONTROLLER_TEENSY40_CONSTANTS_H
