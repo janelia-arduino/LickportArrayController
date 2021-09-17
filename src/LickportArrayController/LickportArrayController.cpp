@@ -77,7 +77,6 @@ void LickportArrayController::setup()
   dispense_duration_parameter.setUnits(digital_controller::constants::ms_units);
 
   modular_server::Parameter & dispense_durations_parameter = modular_server_.createParameter(constants::dispense_durations_parameter_name);
-  dispense_durations_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
   dispense_durations_parameter.setArrayLengthRange(constants::dispense_durations_array_length_min,constants::lickport_count-1);
 
   setChannelCountHandler();
@@ -153,7 +152,7 @@ void LickportArrayController::dispenseLickportsForDuration(const Lickports & lic
 }
 
 void LickportArrayController::dispenseLickportsForDurations(const Lickports & lickports,
-  const DispenseDurations dispense_durations)
+  const DispenseDurations & dispense_durations)
 {
   if (lickports.size() != dispense_durations.size())
   {
@@ -179,16 +178,6 @@ double LickportArrayController::setChannelToPower(size_t lickport,
     digitalWrite(constants::lickport_pins[lickport],LOW);
   }
   return power;
-}
-
-LickportArrayController::Lickports LickportArrayController::jsonArrayToLickports(ArduinoJson::JsonArray lickports_json_array)
-{
-  Lickports lickports;
-  for (uint8_t lickport : lickports_json_array)
-  {
-    lickports.push_back(lickport);
-  }
-  return lickports;
 }
 
 void LickportArrayController::checkLickStatus()
@@ -223,9 +212,8 @@ void LickportArrayController::dispenseLickportForDurationHandler()
 
 void LickportArrayController::dispenseLickportsForDurationHandler()
 {
-  ArduinoJson::JsonArray lickports_json_array;
-  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports_json_array);
-  Lickports lickports = jsonArrayToLickports(lickports_json_array);
+  Lickports lickports;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
 
   long dispense_duration;
   modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
@@ -235,15 +223,13 @@ void LickportArrayController::dispenseLickportsForDurationHandler()
 
 void LickportArrayController::dispenseLickportsForDurationsHandler()
 {
-  ArduinoJson::JsonArray lickports_json_array;
-  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports_json_array);
-  Lickports lickports = jsonArrayToLickports(lickports_json_array);
+  Lickports lickports;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
 
-  ArduinoJson::JsonArray dispense_durations_json_array;
-  modular_server_.parameter(constants::dispense_durations_parameter_name).getValue(dispense_durations_json_array);
-  DispenseDurations dispense_durations = jsonArrayToDispenseDurations(dispense_durations_json_array);
+  DispenseDurations dispense_durations;
+  modular_server_.parameter(constants::dispense_durations_parameter_name).getValue(dispense_durations);
 
-  dispenseLickportsForDuration(lickports,dispense_durations);
+  dispenseLickportsForDurations(lickports,dispense_durations);
 }
 
 void LickportArrayController::dispenseAllLickportsForDurationHandler()

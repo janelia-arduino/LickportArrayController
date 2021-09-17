@@ -45,8 +45,6 @@ protected:
   virtual double setChannelToPower(size_t lickport,
     double power);
 
-  Lickports jsonArrayToLickports(ArduinoJson::JsonArray lickports_json_array);
-
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];
 
