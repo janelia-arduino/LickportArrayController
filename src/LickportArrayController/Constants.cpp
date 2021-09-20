@@ -63,7 +63,7 @@ CONSTANT_STRING(dispense_lickports_for_durations_function_name,"dispenseLickport
 CONSTANT_STRING(dispense_all_lickports_for_duration_function_name,"dispenseAllLickportsForDuration");
 
 // Callbacks
-CONSTANT_STRING(check_lick_status_callback_name,"checkLickStatus");
+CONSTANT_STRING(manage_lick_status_change_callback_name,"manageLickStatusChange");
 
 // Errors
 }

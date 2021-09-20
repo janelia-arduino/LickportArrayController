@@ -102,15 +102,16 @@ void LickportArrayController::setup()
   dispense_lickports_for_durations_function.addParameter(dispense_durations_parameter);
 
   // Callbacks
-  modular_server::Callback & check_lick_status_callback = modular_server_.createCallback(constants::check_lick_status_callback_name);
-  check_lick_status_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::checkLickStatusHandler));
-  check_lick_status_callback.attachTo(change_pin,modular_server::constants::pin_mode_interrupt_falling);
+  modular_server::Callback & manage_lick_status_change_callback = modular_server_.createCallback(constants::manage_lick_status_change_callback_name);
+  manage_lick_status_change_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::manageLickStatusChangeHandler));
+  manage_lick_status_change_callback.attachTo(change_pin,modular_server::constants::pin_mode_interrupt_falling);
 
   setAllChannelsOff();
 
   lick_sensor_.begin();
   lick_sensor_.reset();
-  check_lick_status_ = false;
+  manage_lick_status_change_ = false;
+  lickport_channels_dispensing_ = 0;
 }
 
 void LickportArrayController::update()
@@ -118,12 +119,16 @@ void LickportArrayController::update()
   // Parent Update
   DigitalController::update();
 
-  checkLickStatus();
+  manageLickStatusChange();
 }
 
 void LickportArrayController::dispenseLickportForDuration(uint8_t lickport,
   uint32_t dispense_duration)
 {
+  if (lickportDispensing(lickport))
+  {
+    return;
+  }
   uint32_t lickports = 0;
   lickports |= (1 << lickport);
   addPwm(lickports,
@@ -180,23 +185,48 @@ double LickportArrayController::setChannelToPower(size_t lickport,
   return power;
 }
 
-void LickportArrayController::checkLickStatus()
+void LickportArrayController::startPwmHandler(int pwm_index)
 {
-  if (check_lick_status_)
+  DigitalController::startPwmHandler(pwm_index);
+  lickport_channels_dispensing_ |= getPwmChannels(pwm_index);
+}
+
+void LickportArrayController::stopPwmHandler(int pwm_index)
+{
+  DigitalController::stopPwmHandler(pwm_index);
+  lickport_channels_dispensing_ &= ~getPwmChannels(pwm_index);
+}
+
+void LickportArrayController::manageLickStatusChange()
+{
+  if (manage_lick_status_change_)
   {
-    check_lick_status_ = false;
+    manage_lick_status_change_ = false;
     LickSensorStatus lick_sensor_status = lick_sensor_.getStatus();
     if (lick_sensor_status.any_key_touched)
     {
       modular_server::Pin & lick_detected_pin = modular_server_.pin(constants::lick_detected_pin_name);
       lick_detected_pin.setValue(constants::lick_detected_pulse_duration);
+
+      for (uint8_t lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+      {
+        if (lick_sensor_.keyTouchedGivenKeys(lickport,lick_sensor_status.keys))
+        {
+          dispenseLickportForDuration(lickport,2000);
+        }
+      }
     }
   }
 }
 
-void LickportArrayController::checkLickStatusHandler(modular_server::Pin * pin_ptr)
+bool LickportArrayController::lickportDispensing(uint8_t lickport)
 {
-  check_lick_status_ = true;
+  return bitRead(lickport_channels_dispensing_,lickport);
+}
+
+void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin * pin_ptr)
+{
+  manage_lick_status_change_ = true;
 }
 
 void LickportArrayController::dispenseLickportForDurationHandler()

@@ -45,6 +45,9 @@ protected:
   virtual double setChannelToPower(size_t lickport,
     double power);
 
+  virtual void startPwmHandler(int pwm_index);
+  virtual void stopPwmHandler(int pwm_index);
+
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];
 
@@ -56,12 +59,14 @@ private:
   typedef AT42QT2120 LickSensor;
   typedef AT42QT2120::Status LickSensorStatus;
   LickSensor lick_sensor_;
-  volatile bool check_lick_status_;
+  volatile bool manage_lick_status_change_;
+  uint32_t lickport_channels_dispensing_;
 
-  void checkLickStatus();
+  void manageLickStatusChange();
+  bool lickportDispensing(uint8_t lickport);
 
   // Handlers
-  void checkLickStatusHandler(modular_server::Pin * pin_ptr);
+  void manageLickStatusChangeHandler(modular_server::Pin * pin_ptr);
 
   void dispenseLickportForDurationHandler();
   void dispenseLickportsForDurationHandler();

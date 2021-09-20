@@ -72,7 +72,7 @@ extern ConstantString dispense_lickports_for_durations_function_name;
 extern ConstantString dispense_all_lickports_for_duration_function_name;
 
 // Callbacks
-extern ConstantString check_lick_status_callback_name;
+extern ConstantString manage_lick_status_change_callback_name;
 
 // Errors
 }
