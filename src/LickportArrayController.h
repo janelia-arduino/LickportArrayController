@@ -26,20 +26,27 @@
 class LickportArrayController : public DigitalController
 {
 public:
+  typedef uint8_t Lickport;
+  typedef uint32_t Duration;
+  typedef uint8_t Count;
+  typedef Array<Lickport,lickport_array_controller::constants::LICKPORT_COUNT> Lickports;
+  typedef Array<Duration,lickport_array_controller::constants::LICKPORT_COUNT> Durations;
+
   LickportArrayController();
   virtual void setup();
   virtual void update();
 
-  typedef Array<uint8_t,lickport_array_controller::constants::LICKPORT_COUNT> Lickports;
-  typedef Array<uint32_t,lickport_array_controller::constants::LICKPORT_COUNT> DispenseDurations;
-
-  void dispenseLickportForDuration(uint8_t lickport,
-    uint32_t dispense_duration);
+  void dispenseLickportForDuration(Lickport lickport,
+    Duration duration);
   void dispenseLickportsForDuration(const Lickports & lickports,
-    uint32_t dispense_duration);
+    Duration duration);
   void dispenseLickportsForDurations(const Lickports & lickports,
-    const DispenseDurations & dispense_durations);
-  void dispenseAllLickportsForDuration(uint32_t dispense_duration);
+    const Durations & durations);
+  void dispenseAllLickportsForDuration(Duration duration);
+
+  Lickports getActivatedLickports();
+  void activateOnlyLickport(Lickport lickport);
+  void activateOnlyLickports(Lickports lickports);
 
 protected:
   virtual double setChannelToPower(size_t lickport,
@@ -60,10 +67,18 @@ private:
   typedef AT42QT2120::Status LickSensorStatus;
   LickSensor lick_sensor_;
   volatile bool manage_lick_status_change_;
-  uint32_t lickport_channels_dispensing_;
+  uint32_t lickports_dispensing_;
+  uint32_t lickports_activated_;
+
+  void dispense(Lickport lickport,
+    Duration delay,
+    Duration period,
+    Duration duration,
+    Count count);
 
   void manageLickStatusChange();
-  bool lickportDispensing(uint8_t lickport);
+  bool lickportDispensing(Lickport lickport);
+  bool lickportActivated(Lickport lickport);
 
   // Handlers
   void manageLickStatusChangeHandler(modular_server::Pin * pin_ptr);
@@ -72,6 +87,10 @@ private:
   void dispenseLickportsForDurationHandler();
   void dispenseLickportsForDurationsHandler();
   void dispenseAllLickportsForDurationHandler();
+
+  void getActivatedLickportsHandler();
+  void activateOnlyLickportHandler();
+  void activateOnlyLickportsHandler();
 };
 
 #endif

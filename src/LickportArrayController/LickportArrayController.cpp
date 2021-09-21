@@ -64,6 +64,22 @@ void LickportArrayController::setup()
   channel_count_property.setRange(constants::lickport_count,constants::lickport_count);
   channel_count_property.reenableFunctors();
 
+  modular_server::Property & dispense_delays_property = modular_server_.createProperty(constants::dispense_delays_property_name,constants::dispense_delays_default);
+  dispense_delays_property.setRange(constants::dispense_delay_min,constants::dispense_delay_max);
+  dispense_delays_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
+
+  modular_server::Property & dispense_periods_property = modular_server_.createProperty(constants::dispense_periods_property_name,constants::dispense_periods_default);
+  dispense_periods_property.setRange(constants::dispense_period_min,constants::dispense_period_max);
+  dispense_periods_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
+
+  modular_server::Property & dispense_counts_property = modular_server_.createProperty(constants::dispense_counts_property_name,constants::dispense_counts_default);
+  dispense_counts_property.setRange(constants::dispense_count_min,constants::dispense_count_max);
+  dispense_counts_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
+
+  modular_server::Property & activated_dispense_durations_property = modular_server_.createProperty(constants::activated_dispense_durations_property_name,constants::activated_dispense_durations_default);
+  activated_dispense_durations_property.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
+  activated_dispense_durations_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
+
   // Parameters
   modular_server::Parameter & lickport_parameter = modular_server_.createParameter(constants::lickport_parameter_name);
   lickport_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
@@ -101,6 +117,23 @@ void LickportArrayController::setup()
   dispense_lickports_for_durations_function.addParameter(lickports_parameter);
   dispense_lickports_for_durations_function.addParameter(dispense_durations_parameter);
 
+  modular_server::Function & get_activated_lickports_function = modular_server_.createFunction(constants::get_activated_lickports_function_name);
+  get_activated_lickports_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::getActivatedLickportsHandler));
+  get_activated_lickports_function.setResultTypeLong();
+  get_activated_lickports_function.setResultTypeArray();
+
+  modular_server::Function & activate_only_lickport_function = modular_server_.createFunction(constants::activate_only_lickport_function_name);
+  activate_only_lickport_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::activateOnlyLickportHandler));
+  activate_only_lickport_function.addParameter(lickport_parameter);
+  activate_only_lickport_function.setResultTypeLong();
+  activate_only_lickport_function.setResultTypeArray();
+
+  modular_server::Function & activate_only_lickports_function = modular_server_.createFunction(constants::activate_only_lickports_function_name);
+  activate_only_lickports_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::activateOnlyLickportsHandler));
+  activate_only_lickports_function.addParameter(lickports_parameter);
+  activate_only_lickports_function.setResultTypeLong();
+  activate_only_lickports_function.setResultTypeArray();
+
   // Callbacks
   modular_server::Callback & manage_lick_status_change_callback = modular_server_.createCallback(constants::manage_lick_status_change_callback_name);
   manage_lick_status_change_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::manageLickStatusChangeHandler));
@@ -111,7 +144,8 @@ void LickportArrayController::setup()
   lick_sensor_.begin();
   lick_sensor_.reset();
   manage_lick_status_change_ = false;
-  lickport_channels_dispensing_ = 0;
+  lickports_dispensing_ = 0;
+  lickports_activated_ = 0;
 }
 
 void LickportArrayController::update()
@@ -122,51 +156,76 @@ void LickportArrayController::update()
   manageLickStatusChange();
 }
 
-void LickportArrayController::dispenseLickportForDuration(uint8_t lickport,
-  uint32_t dispense_duration)
+void LickportArrayController::dispenseLickportForDuration(Lickport lickport,
+  Duration duration)
 {
-  if (lickportDispensing(lickport))
-  {
-    return;
-  }
-  uint32_t lickports = 0;
-  lickports |= (1 << lickport);
-  addPwm(lickports,
-    constants::dispense_power,
-    constants::dispense_delay,
-    dispense_duration,
-    dispense_duration,
-    constants::dispense_count);
-}
+  long delay;
+  modular_server_.property(constants::dispense_delays_property_name).getElementValue(lickport,delay);
 
-void LickportArrayController::dispenseAllLickportsForDuration(uint32_t dispense_duration)
-{
-  for (uint8_t lickport=0; lickport<constants::lickport_count; ++lickport)
-  {
-    dispenseLickportForDuration(lickport,dispense_duration);
-  }
+  long period;
+  modular_server_.property(constants::dispense_periods_property_name).getElementValue(lickport,period);
+
+  long count;
+  modular_server_.property(constants::dispense_counts_property_name).getElementValue(lickport,count);
+
+  dispense(lickport,delay,period,duration,count);
 }
 
 void LickportArrayController::dispenseLickportsForDuration(const Lickports & lickports,
-  uint32_t dispense_duration)
+  Duration duration)
 {
-  for (uint8_t lickport : lickports)
+  for (Lickport lickport : lickports)
   {
-    dispenseLickportForDuration(lickport,dispense_duration);
+    dispenseLickportForDuration(lickport,duration);
+  }
+}
+
+void LickportArrayController::dispenseAllLickportsForDuration(Duration duration)
+{
+  for (Lickport lickport=0; lickport<constants::lickport_count; ++lickport)
+  {
+    dispenseLickportForDuration(lickport,duration);
   }
 }
 
 void LickportArrayController::dispenseLickportsForDurations(const Lickports & lickports,
-  const DispenseDurations & dispense_durations)
+  const Durations & durations)
 {
-  if (lickports.size() != dispense_durations.size())
+  if (lickports.size() != durations.size())
   {
     return;
   }
   for (uint8_t index=0; index<lickports.size(); ++index)
   {
-    dispenseLickportForDuration(lickports[index],dispense_durations[index]);
+    dispenseLickportForDuration(lickports[index],durations[index]);
   }
+}
+
+void LickportArrayController::activateOnlyLickport(Lickport lickport)
+{
+  lickports_activated_ = 1 << lickport;
+}
+
+void LickportArrayController::activateOnlyLickports(Lickports lickports)
+{
+  lickports_activated_ = 0;
+  for (Lickport lickport : lickports)
+  {
+    lickports_activated_ |= 1 << lickport;
+  }
+}
+
+LickportArrayController::Lickports LickportArrayController::getActivatedLickports()
+{
+  Lickports lickports;
+  for (Lickport lickport=0; lickport < constants::LICKPORT_COUNT; ++lickport)
+  {
+    if (bitRead(lickports_activated_,lickport))
+    {
+      lickports.push_back(lickport);
+    }
+  }
+  return lickports;
 }
 
 double LickportArrayController::setChannelToPower(size_t lickport,
@@ -188,13 +247,33 @@ double LickportArrayController::setChannelToPower(size_t lickport,
 void LickportArrayController::startPwmHandler(int pwm_index)
 {
   DigitalController::startPwmHandler(pwm_index);
-  lickport_channels_dispensing_ |= getPwmChannels(pwm_index);
+  lickports_dispensing_ |= getPwmChannels(pwm_index);
 }
 
 void LickportArrayController::stopPwmHandler(int pwm_index)
 {
   DigitalController::stopPwmHandler(pwm_index);
-  lickport_channels_dispensing_ &= ~getPwmChannels(pwm_index);
+  lickports_dispensing_ &= ~getPwmChannels(pwm_index);
+}
+
+void LickportArrayController::dispense(Lickport lickport,
+  Duration delay,
+  Duration period,
+  Duration duration,
+  Count count)
+{
+  if (lickportDispensing(lickport))
+  {
+    return;
+  }
+  uint32_t lickport_channels = 0;
+  lickport_channels |= (1 << lickport);
+  addPwm(lickport_channels,
+    constants::dispense_power,
+    delay,
+    period,
+    duration,
+    count);
 }
 
 void LickportArrayController::manageLickStatusChange()
@@ -208,20 +287,29 @@ void LickportArrayController::manageLickStatusChange()
       modular_server::Pin & lick_detected_pin = modular_server_.pin(constants::lick_detected_pin_name);
       lick_detected_pin.setValue(constants::lick_detected_pulse_duration);
 
-      for (uint8_t lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+      for (Lickport lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
       {
-        if (lick_sensor_.keyTouchedGivenKeys(lickport,lick_sensor_status.keys))
+        if ((lick_sensor_.touched(lick_sensor_status,lickport)) &&
+          (lickportActivated(lickport)))
         {
-          dispenseLickportForDuration(lickport,2000);
+          long duration;
+          modular_server_.property(constants::activated_dispense_durations_property_name).getElementValue(lickport,duration);
+
+          dispenseLickportForDuration(lickport,duration);
         }
       }
     }
   }
 }
 
-bool LickportArrayController::lickportDispensing(uint8_t lickport)
+bool LickportArrayController::lickportDispensing(Lickport lickport)
 {
-  return bitRead(lickport_channels_dispensing_,lickport);
+  return bitRead(lickports_dispensing_,lickport);
+}
+
+bool LickportArrayController::lickportActivated(Lickport lickport)
+{
+  return bitRead(lickports_activated_,lickport);
 }
 
 void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin * pin_ptr)
@@ -231,13 +319,13 @@ void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin 
 
 void LickportArrayController::dispenseLickportForDurationHandler()
 {
-  long lickport;
+  Lickport lickport;
   modular_server_.parameter(constants::lickport_parameter_name).getValue(lickport);
 
-  long dispense_duration;
-  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+  Duration duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(duration);
 
-  dispenseLickportForDuration(lickport,dispense_duration);
+  dispenseLickportForDuration(lickport,duration);
 }
 
 void LickportArrayController::dispenseLickportsForDurationHandler()
@@ -245,10 +333,10 @@ void LickportArrayController::dispenseLickportsForDurationHandler()
   Lickports lickports;
   modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
 
-  long dispense_duration;
-  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+  Duration duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(duration);
 
-  dispenseLickportsForDuration(lickports,dispense_duration);
+  dispenseLickportsForDuration(lickports,duration);
 }
 
 void LickportArrayController::dispenseLickportsForDurationsHandler()
@@ -256,16 +344,47 @@ void LickportArrayController::dispenseLickportsForDurationsHandler()
   Lickports lickports;
   modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
 
-  DispenseDurations dispense_durations;
-  modular_server_.parameter(constants::dispense_durations_parameter_name).getValue(dispense_durations);
+  Durations durations;
+  modular_server_.parameter(constants::dispense_durations_parameter_name).getValue(durations);
 
-  dispenseLickportsForDurations(lickports,dispense_durations);
+  dispenseLickportsForDurations(lickports,durations);
 }
 
 void LickportArrayController::dispenseAllLickportsForDurationHandler()
 {
-  long dispense_duration;
-  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(dispense_duration);
+  Duration duration;
+  modular_server_.parameter(constants::dispense_duration_parameter_name).getValue(duration);
 
-  dispenseAllLickportsForDuration(dispense_duration);
+  dispenseAllLickportsForDuration(duration);
+}
+
+void LickportArrayController::getActivatedLickportsHandler()
+{
+  Lickports lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::activateOnlyLickportHandler()
+{
+  Lickport lickport;
+  modular_server_.parameter(constants::lickport_parameter_name).getValue(lickport);
+
+  activateOnlyLickport(lickport);
+
+  Lickports lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::activateOnlyLickportsHandler()
+{
+  Lickports lickports;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
+
+  activateOnlyLickports(lickports);
+
+  lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
 }

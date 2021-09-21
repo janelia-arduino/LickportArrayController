@@ -28,6 +28,13 @@ extern const size_t lickport_pins[LICKPORT_COUNT];
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const long dispense_delays_default[LICKPORT_COUNT];
+
+extern const long dispense_periods_default[LICKPORT_COUNT];
+
+extern const long dispense_counts_default[LICKPORT_COUNT];
+
+extern const long activated_dispense_durations_default[LICKPORT_COUNT];
 
 // Parameters
 

@@ -16,9 +16,9 @@ namespace lickport_array_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=1};
+enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=4};
-enum{FUNCTION_COUNT_MAX=4};
+enum{FUNCTION_COUNT_MAX=9};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -30,8 +30,6 @@ extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
 extern const double dispense_power;
-extern const long dispense_delay;
-extern const long dispense_count;
 
 extern const long lickport_count;
 
@@ -50,6 +48,23 @@ extern const size_t sync_pin_number;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern ConstantString dispense_delays_property_name;
+extern const long dispense_delay_min;
+extern const long dispense_delay_max;
+extern const long dispense_delay_default;
+
+extern ConstantString dispense_periods_property_name;
+extern const long dispense_period_min;
+extern const long dispense_period_max;
+extern const long dispense_period_default;
+
+extern ConstantString dispense_counts_property_name;
+extern const long dispense_count_min;
+extern const long dispense_count_max;
+extern const long dispense_count_default;
+
+extern ConstantString activated_dispense_durations_property_name;
+extern const long activated_dispense_duration_default;
 
 // Parameters
 extern ConstantString lickport_parameter_name;
@@ -70,6 +85,9 @@ extern ConstantString dispense_lickport_for_duration_function_name;
 extern ConstantString dispense_lickports_for_duration_function_name;
 extern ConstantString dispense_lickports_for_durations_function_name;
 extern ConstantString dispense_all_lickports_for_duration_function_name;
+extern ConstantString get_activated_lickports_function_name;
+extern ConstantString activate_only_lickport_function_name;
+extern ConstantString activate_only_lickports_function_name;
 
 // Callbacks
 extern ConstantString manage_lick_status_change_callback_name;

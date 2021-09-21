@@ -49,6 +49,69 @@ const size_t sync_pin_number = 14;
 // Units
 
 // Properties
+const long dispense_delays_default[LICKPORT_COUNT] =
+{
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+  dispense_delay_default,
+};
+
+const long dispense_periods_default[LICKPORT_COUNT] =
+{
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+  dispense_period_default,
+};
+
+const long dispense_counts_default[LICKPORT_COUNT] =
+{
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+  dispense_count_default,
+};
+
+const long activated_dispense_durations_default[LICKPORT_COUNT] =
+{
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+  activated_dispense_duration_default,
+};
 
 // Parameters
 
