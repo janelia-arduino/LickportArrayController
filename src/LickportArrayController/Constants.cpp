@@ -79,9 +79,15 @@ CONSTANT_STRING(dispense_all_lickports_for_duration_function_name,"dispenseAllLi
 CONSTANT_STRING(get_activated_lickports_function_name,"getActivatedLickports");
 CONSTANT_STRING(activate_only_lickport_function_name,"activateOnlyLickport");
 CONSTANT_STRING(activate_only_lickports_function_name,"activateOnlyLickports");
+CONSTANT_STRING(activate_lickport_function_name,"activateLickport");
+CONSTANT_STRING(activate_lickports_function_name,"activateLickports");
+CONSTANT_STRING(deactivate_lickport_function_name,"deactivateLickport");
+CONSTANT_STRING(deactivate_lickports_function_name,"deactivateLickports");
 
 // Callbacks
 CONSTANT_STRING(manage_lick_status_change_callback_name,"manageLickStatusChange");
+CONSTANT_STRING(activate_all_lickports_callback_name,"activateAllLickports");
+CONSTANT_STRING(deactivate_all_lickports_callback_name,"deactivateAllLickports");
 
 // Errors
 }

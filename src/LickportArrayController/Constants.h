@@ -18,8 +18,8 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=4};
-enum{FUNCTION_COUNT_MAX=9};
-enum{CALLBACK_COUNT_MAX=1};
+enum{FUNCTION_COUNT_MAX=11};
+enum{CALLBACK_COUNT_MAX=3};
 
 extern ConstantString device_name;
 
@@ -88,9 +88,15 @@ extern ConstantString dispense_all_lickports_for_duration_function_name;
 extern ConstantString get_activated_lickports_function_name;
 extern ConstantString activate_only_lickport_function_name;
 extern ConstantString activate_only_lickports_function_name;
+extern ConstantString activate_lickport_function_name;
+extern ConstantString activate_lickports_function_name;
+extern ConstantString deactivate_lickport_function_name;
+extern ConstantString deactivate_lickports_function_name;
 
 // Callbacks
 extern ConstantString manage_lick_status_change_callback_name;
+extern ConstantString activate_all_lickports_callback_name;
+extern ConstantString deactivate_all_lickports_callback_name;
 
 // Errors
 }

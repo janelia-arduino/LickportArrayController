@@ -45,8 +45,14 @@ public:
   void dispenseAllLickportsForDuration(Duration duration);
 
   Lickports getActivatedLickports();
+  void activateAllLickports();
+  void deactivateAllLickports();
   void activateOnlyLickport(Lickport lickport);
   void activateOnlyLickports(Lickports lickports);
+  void activateLickport(Lickport lickport);
+  void activateLickports(Lickports lickports);
+  void deactivateLickport(Lickport lickport);
+  void deactivateLickports(Lickports lickports);
 
 protected:
   virtual double setChannelToPower(size_t lickport,
@@ -82,6 +88,8 @@ private:
 
   // Handlers
   void manageLickStatusChangeHandler(modular_server::Pin * pin_ptr);
+  void activateAllLickportsHandler(modular_server::Pin * pin_ptr);
+  void deactivateAllLickportsHandler(modular_server::Pin * pin_ptr);
 
   void dispenseLickportForDurationHandler();
   void dispenseLickportsForDurationHandler();
@@ -91,6 +99,10 @@ private:
   void getActivatedLickportsHandler();
   void activateOnlyLickportHandler();
   void activateOnlyLickportsHandler();
+  void activateLickportHandler();
+  void activateLickportsHandler();
+  void deactivateLickportHandler();
+  void deactivateLickportsHandler();
 };
 
 #endif

@@ -134,10 +134,40 @@ void LickportArrayController::setup()
   activate_only_lickports_function.setResultTypeLong();
   activate_only_lickports_function.setResultTypeArray();
 
+  modular_server::Function & activate_lickport_function = modular_server_.createFunction(constants::activate_lickport_function_name);
+  activate_lickport_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::activateLickportHandler));
+  activate_lickport_function.addParameter(lickport_parameter);
+  activate_lickport_function.setResultTypeLong();
+  activate_lickport_function.setResultTypeArray();
+
+  modular_server::Function & activate_lickports_function = modular_server_.createFunction(constants::activate_lickports_function_name);
+  activate_lickports_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::activateLickportsHandler));
+  activate_lickports_function.addParameter(lickports_parameter);
+  activate_lickports_function.setResultTypeLong();
+  activate_lickports_function.setResultTypeArray();
+
+  modular_server::Function & deactivate_lickport_function = modular_server_.createFunction(constants::deactivate_lickport_function_name);
+  deactivate_lickport_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::deactivateLickportHandler));
+  deactivate_lickport_function.addParameter(lickport_parameter);
+  deactivate_lickport_function.setResultTypeLong();
+  deactivate_lickport_function.setResultTypeArray();
+
+  modular_server::Function & deactivate_lickports_function = modular_server_.createFunction(constants::deactivate_lickports_function_name);
+  deactivate_lickports_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::deactivateLickportsHandler));
+  deactivate_lickports_function.addParameter(lickports_parameter);
+  deactivate_lickports_function.setResultTypeLong();
+  deactivate_lickports_function.setResultTypeArray();
+
   // Callbacks
   modular_server::Callback & manage_lick_status_change_callback = modular_server_.createCallback(constants::manage_lick_status_change_callback_name);
   manage_lick_status_change_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::manageLickStatusChangeHandler));
   manage_lick_status_change_callback.attachTo(change_pin,modular_server::constants::pin_mode_interrupt_falling);
+
+  modular_server::Callback & activate_all_lickports_callback = modular_server_.createCallback(constants::activate_all_lickports_callback_name);
+  activate_all_lickports_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::activateAllLickportsHandler));
+
+  modular_server::Callback & deactivate_all_lickports_callback = modular_server_.createCallback(constants::deactivate_all_lickports_callback_name);
+  deactivate_all_lickports_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::deactivateAllLickportsHandler));
 
   setAllChannelsOff();
 
@@ -201,6 +231,16 @@ void LickportArrayController::dispenseLickportsForDurations(const Lickports & li
   }
 }
 
+void LickportArrayController::activateAllLickports()
+{
+  lickports_activated_ = ~0;
+}
+
+void LickportArrayController::deactivateAllLickports()
+{
+  lickports_activated_ = 0;
+}
+
 void LickportArrayController::activateOnlyLickport(Lickport lickport)
 {
   lickports_activated_ = 1 << lickport;
@@ -211,7 +251,33 @@ void LickportArrayController::activateOnlyLickports(Lickports lickports)
   lickports_activated_ = 0;
   for (Lickport lickport : lickports)
   {
-    lickports_activated_ |= 1 << lickport;
+    activateLickport(lickport);
+  }
+}
+
+void LickportArrayController::activateLickport(Lickport lickport)
+{
+  lickports_activated_ |= 1 << lickport;
+}
+
+void LickportArrayController::activateLickports(Lickports lickports)
+{
+  for (Lickport lickport : lickports)
+  {
+    activateLickport(lickport);
+  }
+}
+
+void LickportArrayController::deactivateLickport(Lickport lickport)
+{
+  lickports_activated_ &= ~(1 << lickport);
+}
+
+void LickportArrayController::deactivateLickports(Lickports lickports)
+{
+  for (Lickport lickport : lickports)
+  {
+    deactivateLickport(lickport);
   }
 }
 
@@ -317,6 +383,16 @@ void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin 
   manage_lick_status_change_ = true;
 }
 
+void LickportArrayController::activateAllLickportsHandler(modular_server::Pin * pin_ptr)
+{
+  activateAllLickports();
+}
+
+void LickportArrayController::deactivateAllLickportsHandler(modular_server::Pin * pin_ptr)
+{
+  deactivateAllLickports();
+}
+
 void LickportArrayController::dispenseLickportForDurationHandler()
 {
   Lickport lickport;
@@ -383,6 +459,54 @@ void LickportArrayController::activateOnlyLickportsHandler()
   modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
 
   activateOnlyLickports(lickports);
+
+  lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::activateLickportHandler()
+{
+  Lickport lickport;
+  modular_server_.parameter(constants::lickport_parameter_name).getValue(lickport);
+
+  activateLickport(lickport);
+
+  Lickports lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::activateLickportsHandler()
+{
+  Lickports lickports;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
+
+  activateLickports(lickports);
+
+  lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::deactivateLickportHandler()
+{
+  Lickport lickport;
+  modular_server_.parameter(constants::lickport_parameter_name).getValue(lickport);
+
+  deactivateLickport(lickport);
+
+  Lickports lickports = getActivatedLickports();
+
+  modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::deactivateLickportsHandler()
+{
+  Lickports lickports;
+  modular_server_.parameter(constants::lickports_parameter_name).getValue(lickports);
+
+  deactivateLickports(lickports);
 
   lickports = getActivatedLickports();
 
