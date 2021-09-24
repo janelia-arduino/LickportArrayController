@@ -29,6 +29,7 @@ public:
   typedef uint8_t Lickport;
   typedef uint32_t Duration;
   typedef uint8_t Count;
+  typedef uint32_t BitArray;
   typedef Array<Lickport,lickport_array_controller::constants::LICKPORT_COUNT> Lickports;
   typedef Array<Duration,lickport_array_controller::constants::LICKPORT_COUNT> Durations;
 
@@ -54,6 +55,17 @@ public:
   void deactivateLickport(Lickport lickport);
   void deactivateLickports(Lickports lickports);
 
+  struct LickDatum
+  {
+    time_t time;
+    unsigned long millis;
+    BitArray lickports_licked;
+    BitArray lickports_activated;
+  };
+  typedef Array<LickDatum,lickport_array_controller::constants::LICK_DATUM_COUNT_MAX> LickData;
+  LickData getLickData();
+  void clearLickData();
+
 protected:
   virtual double setChannelToPower(size_t lickport,
     double power);
@@ -73,8 +85,9 @@ private:
   typedef AT42QT2120::Status LickSensorStatus;
   LickSensor lick_sensor_;
   volatile bool manage_lick_status_change_;
-  uint32_t lickports_dispensing_;
-  uint32_t lickports_activated_;
+  BitArray lickports_dispensing_;
+  BitArray lickports_activated_;
+  LickData lick_data_;
 
   void dispense(Lickport lickport,
     Duration delay,
@@ -83,8 +96,11 @@ private:
     Count count);
 
   void manageLickStatusChange();
+  bool lickportTrueInBitArray(Lickport lickport,
+    BitArray bit_array);
   bool lickportDispensing(Lickport lickport);
   bool lickportActivated(Lickport lickport);
+  void updateLickData(LickSensorStatus lick_sensor_status);
 
   // Handlers
   void manageLickStatusChangeHandler(modular_server::Pin * pin_ptr);
@@ -103,6 +119,8 @@ private:
   void activateLickportsHandler();
   void deactivateLickportHandler();
   void deactivateLickportsHandler();
+
+  void getAndClearLickDataHandler();
 };
 
 #endif

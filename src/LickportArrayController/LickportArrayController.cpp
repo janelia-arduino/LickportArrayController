@@ -28,7 +28,7 @@ void LickportArrayController::setup()
   modular_server_.setDeviceName(constants::device_name);
 
   // Pin Setup
-  for (size_t lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+  for (Lickport lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
   {
     pinMode(constants::lickport_pins[lickport],OUTPUT);
   }
@@ -158,6 +158,11 @@ void LickportArrayController::setup()
   deactivate_lickports_function.setResultTypeLong();
   deactivate_lickports_function.setResultTypeArray();
 
+  modular_server::Function & get_and_clear_lick_data_function = modular_server_.createFunction(constants::get_and_clear_lick_data_function_name);
+  get_and_clear_lick_data_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::getAndClearLickDataHandler));
+  get_and_clear_lick_data_function.setResultTypeObject();
+  get_and_clear_lick_data_function.setResultTypeArray();
+
   // Callbacks
   modular_server::Callback & manage_lick_status_change_callback = modular_server_.createCallback(constants::manage_lick_status_change_callback_name);
   manage_lick_status_change_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::manageLickStatusChangeHandler));
@@ -231,6 +236,19 @@ void LickportArrayController::dispenseLickportsForDurations(const Lickports & li
   }
 }
 
+LickportArrayController::Lickports LickportArrayController::getActivatedLickports()
+{
+  Lickports lickports;
+  for (Lickport lickport=0; lickport < constants::LICKPORT_COUNT; ++lickport)
+  {
+    if (bitRead(lickports_activated_,lickport))
+    {
+      lickports.push_back(lickport);
+    }
+  }
+  return lickports;
+}
+
 void LickportArrayController::activateAllLickports()
 {
   lickports_activated_ = ~0;
@@ -281,17 +299,9 @@ void LickportArrayController::deactivateLickports(Lickports lickports)
   }
 }
 
-LickportArrayController::Lickports LickportArrayController::getActivatedLickports()
+LickportArrayController::LickData LickportArrayController::getLickData()
 {
-  Lickports lickports;
-  for (Lickport lickport=0; lickport < constants::LICKPORT_COUNT; ++lickport)
-  {
-    if (bitRead(lickports_activated_,lickport))
-    {
-      lickports.push_back(lickport);
-    }
-  }
-  return lickports;
+  return lick_data_;
 }
 
 double LickportArrayController::setChannelToPower(size_t lickport,
@@ -350,6 +360,7 @@ void LickportArrayController::manageLickStatusChange()
     LickSensorStatus lick_sensor_status = lick_sensor_.getStatus();
     if (lick_sensor_status.any_key_touched)
     {
+      updateLickData(lick_sensor_status);
       modular_server::Pin & lick_detected_pin = modular_server_.pin(constants::lick_detected_pin_name);
       lick_detected_pin.setValue(constants::lick_detected_pulse_duration);
 
@@ -368,14 +379,42 @@ void LickportArrayController::manageLickStatusChange()
   }
 }
 
+bool LickportArrayController::lickportTrueInBitArray(Lickport lickport,
+  BitArray bit_array)
+{
+  return bitRead(bit_array,lickport);
+}
+
 bool LickportArrayController::lickportDispensing(Lickport lickport)
 {
-  return bitRead(lickports_dispensing_,lickport);
+  return lickportTrueInBitArray(lickport,lickports_dispensing_);
 }
 
 bool LickportArrayController::lickportActivated(Lickport lickport)
 {
-  return bitRead(lickports_activated_,lickport);
+  return lickportTrueInBitArray(lickport,lickports_activated_);
+}
+
+void LickportArrayController::updateLickData(LickSensorStatus lick_sensor_status)
+{
+  LickDatum lick_datum;
+  if (timeIsSet())
+  {
+    lick_datum.time = getTime();
+  }
+  else
+  {
+    lick_datum.time = 0;
+  }
+  lick_datum.millis = millis();
+  lick_datum.lickports_licked = lick_sensor_status.keys;
+  lick_datum.lickports_activated = lickports_activated_;
+  lick_data_.push_back(lick_datum);
+}
+
+void LickportArrayController::clearLickData()
+{
+  lick_data_.clear();
 }
 
 void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin * pin_ptr)
@@ -511,4 +550,49 @@ void LickportArrayController::deactivateLickportsHandler()
   lickports = getActivatedLickports();
 
   modular_server_.response().returnResult(lickports);
+}
+
+void LickportArrayController::getAndClearLickDataHandler()
+{
+  LickData lick_data = getLickData();
+
+  modular_server_.response().writeResultKey();
+
+  modular_server_.response().beginArray();
+
+  for (LickDatum lick_datum : lick_data)
+  {
+    modular_server_.response().beginObject();
+
+    modular_server_.response().write(constants::lick_datum_time,lick_datum.time);
+    modular_server_.response().write(constants::lick_datum_millis,lick_datum.millis);
+
+    modular_server_.response().writeKey(constants::lick_datum_lickports_licked);
+    modular_server_.response().beginArray();
+    for (Lickport lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+    {
+      if (lickportTrueInBitArray(lickport,lick_datum.lickports_licked))
+      {
+        modular_server_.response().write(lickport);
+      }
+    }
+    modular_server_.response().endArray();
+
+    modular_server_.response().writeKey(constants::lick_datum_lickports_activated);
+    modular_server_.response().beginArray();
+    for (Lickport lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+    {
+      if (lickportTrueInBitArray(lickport,lick_datum.lickports_activated))
+      {
+        modular_server_.response().write(lickport);
+      }
+    }
+    modular_server_.response().endArray();
+
+    modular_server_.response().endObject();
+  }
+
+  modular_server_.response().endArray();
+
+  clearLickData();
 }

@@ -18,7 +18,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=4};
-enum{FUNCTION_COUNT_MAX=11};
+enum{FUNCTION_COUNT_MAX=12};
 enum{CALLBACK_COUNT_MAX=3};
 
 extern ConstantString device_name;
@@ -32,6 +32,13 @@ extern const modular_server::HardwareInfo hardware_info;
 extern const double dispense_power;
 
 extern const long lickport_count;
+
+enum{LICK_DATUM_COUNT_MAX=100};
+
+extern ConstantString lick_datum_time;
+extern ConstantString lick_datum_millis;
+extern ConstantString lick_datum_lickports_licked;
+extern ConstantString lick_datum_lickports_activated;
 
 // Pins
 extern ConstantString change_pin_name;
@@ -92,6 +99,7 @@ extern ConstantString activate_lickport_function_name;
 extern ConstantString activate_lickports_function_name;
 extern ConstantString deactivate_lickport_function_name;
 extern ConstantString deactivate_lickports_function_name;
+extern ConstantString get_and_clear_lick_data_function_name;
 
 // Callbacks
 extern ConstantString manage_lick_status_change_callback_name;

@@ -28,6 +28,11 @@ CONSTANT_STRING(hardware_name,"lickport_array_controller");
 
 const double dispense_power = digital_controller::constants::power_max;
 
+CONSTANT_STRING(lick_datum_time,"time");
+CONSTANT_STRING(lick_datum_millis,"millis");
+CONSTANT_STRING(lick_datum_lickports_licked,"lickports_licked");
+CONSTANT_STRING(lick_datum_lickports_activated,"lickports_activated");
+
 // Pins
 CONSTANT_STRING(change_pin_name,"change");
 
@@ -83,6 +88,7 @@ CONSTANT_STRING(activate_lickport_function_name,"activateLickport");
 CONSTANT_STRING(activate_lickports_function_name,"activateLickports");
 CONSTANT_STRING(deactivate_lickport_function_name,"deactivateLickport");
 CONSTANT_STRING(deactivate_lickports_function_name,"deactivateLickports");
+CONSTANT_STRING(get_and_clear_lick_data_function_name,"getAndClearLickData");
 
 // Callbacks
 CONSTANT_STRING(manage_lick_status_change_callback_name,"manageLickStatusChange");
