@@ -37,6 +37,8 @@ public:
   virtual void setup();
   virtual void update();
 
+  void calibrateLickSensor();
+
   void dispenseLickportForDuration(Lickport lickport,
     Duration duration);
   void dispenseLickportsForDuration(const Lickports & lickports,
@@ -66,13 +68,6 @@ public:
   LickData getLickData();
   void clearLickData();
 
-protected:
-  virtual double setChannelToPower(size_t lickport,
-    double power);
-
-  virtual void startPwmHandler(int pwm_index);
-  virtual void stopPwmHandler(int pwm_index);
-
 private:
   modular_server::Pin pins_[lickport_array_controller::constants::PIN_COUNT_MAX];
 
@@ -88,6 +83,13 @@ private:
   BitArray lickports_dispensing_;
   BitArray lickports_activated_;
   LickData lick_data_;
+  digital_controller::constants::PwmId sync_pwm_id_;
+
+  virtual double setChannelToPower(size_t lickport,
+    double power);
+
+  void startSyncPwm();
+  void stopSyncPwm();
 
   void dispense(Lickport lickport,
     Duration delay,
@@ -103,6 +105,12 @@ private:
   void updateLickData(LickSensorStatus lick_sensor_status);
 
   // Handlers
+  void setSyncPropertyHandler();
+  void stopSyncPwmHandler(int pwm_index);
+  void startLickportPwmHandler(int pwm_index);
+  void stopLickportPwmHandler(int pwm_index);
+
+  void calibrateLickSensorHandler(modular_server::Pin * pin_ptr);
   void manageLickStatusChangeHandler(modular_server::Pin * pin_ptr);
   void activateAllLickportsHandler(modular_server::Pin * pin_ptr);
   void deactivateAllLickportsHandler(modular_server::Pin * pin_ptr);

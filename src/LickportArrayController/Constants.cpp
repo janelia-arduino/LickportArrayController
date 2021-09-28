@@ -28,10 +28,16 @@ CONSTANT_STRING(hardware_name,"lickport_array_controller");
 
 const double dispense_power = digital_controller::constants::power_max;
 
+const size_t sync_delay = 10;
+const size_t sync_count = 1;
+
 CONSTANT_STRING(lick_datum_time,"time");
 CONSTANT_STRING(lick_datum_millis,"millis");
 CONSTANT_STRING(lick_datum_lickports_licked,"lickports_licked");
 CONSTANT_STRING(lick_datum_lickports_activated,"lickports_activated");
+
+const long duration_min = 10;
+const long duration_max = 2000000000;
 
 // Pins
 CONSTANT_STRING(change_pin_name,"change");
@@ -39,11 +45,18 @@ CONSTANT_STRING(change_pin_name,"change");
 CONSTANT_STRING(lick_detected_pin_name,"lick_detected");
 const size_t lick_detected_pulse_duration = 200;
 
-CONSTANT_STRING(sync_pin_name,"sync");
-
 // Units
 
 // Properties
+CONSTANT_STRING(sync_period_min_property_name,"syncPeriodMin");
+const long sync_period_min_default = 9000;
+
+CONSTANT_STRING(sync_period_max_property_name,"syncPeriodMax");
+const long sync_period_max_default = 11000;
+
+CONSTANT_STRING(sync_on_duration_property_name,"syncOnDuration");
+const long sync_on_duration_default = 50;
+
 CONSTANT_STRING(dispense_delays_property_name,"dispenseDelays");
 const long dispense_delay_min = 0;
 const long dispense_delay_max = 1000;
@@ -70,8 +83,6 @@ CONSTANT_STRING(lickports_parameter_name,"lickports");
 const long lickports_array_length_min = 1;
 
 CONSTANT_STRING(dispense_duration_parameter_name,"dispense_duration");
-const long dispense_duration_min = 10;
-const long dispense_duration_max = 2000000000;
 
 CONSTANT_STRING(dispense_durations_parameter_name,"dispense_durations");
 const long dispense_durations_array_length_min = 1;
@@ -91,6 +102,7 @@ CONSTANT_STRING(deactivate_lickports_function_name,"deactivateLickports");
 CONSTANT_STRING(get_and_clear_lick_data_function_name,"getAndClearLickData");
 
 // Callbacks
+CONSTANT_STRING(calibrate_lick_sensor_callback_name,"calibrateLickSensor");
 CONSTANT_STRING(manage_lick_status_change_callback_name,"manageLickStatusChange");
 CONSTANT_STRING(activate_all_lickports_callback_name,"activateAllLickports");
 CONSTANT_STRING(deactivate_all_lickports_callback_name,"deactivateAllLickports");

@@ -28,9 +28,9 @@ void LickportArrayController::setup()
   modular_server_.setDeviceName(constants::device_name);
 
   // Pin Setup
-  for (Lickport lickport=0; lickport<constants::LICKPORT_COUNT; ++lickport)
+  for (Channel channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
-    pinMode(constants::lickport_pins[lickport],OUTPUT);
+    pinMode(constants::channel_pins[channel],OUTPUT);
   }
 
   // Add Hardware
@@ -46,10 +46,6 @@ void LickportArrayController::setup()
     constants::lick_detected_pin_number);
   lick_detected_pin.setModePulseRising();
 
-  modular_server::Pin & sync_pin = modular_server_.createPin(constants::sync_pin_name,
-    constants::sync_pin_number);
-  sync_pin.setModePulseFalling();
-
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
     properties_,
@@ -60,9 +56,21 @@ void LickportArrayController::setup()
   // Properties
   modular_server::Property & channel_count_property = modular_server_.property(digital_controller::constants::channel_count_property_name);
   channel_count_property.disableFunctors();
-  channel_count_property.setDefaultValue(constants::lickport_count);
-  channel_count_property.setRange(constants::lickport_count,constants::lickport_count);
+  channel_count_property.setDefaultValue(constants::channel_count);
+  channel_count_property.setRange(constants::channel_count,constants::channel_count);
   channel_count_property.reenableFunctors();
+
+  modular_server::Property & sync_on_duration_property = modular_server_.createProperty(constants::sync_on_duration_property_name,constants::sync_on_duration_default);
+  sync_on_duration_property.setRange(constants::duration_min,constants::duration_max);
+  sync_on_duration_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::setSyncPropertyHandler));
+
+  modular_server::Property & sync_period_min_property = modular_server_.createProperty(constants::sync_period_min_property_name,constants::sync_period_min_default);
+  sync_period_min_property.setRange(constants::duration_min,constants::duration_max);
+  sync_period_min_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::setSyncPropertyHandler));
+
+  modular_server::Property & sync_period_max_property = modular_server_.createProperty(constants::sync_period_max_property_name,constants::sync_period_max_default);
+  sync_period_max_property.setRange(constants::duration_min,constants::duration_max);
+  sync_period_max_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&LickportArrayController::setSyncPropertyHandler));
 
   modular_server::Property & dispense_delays_property = modular_server_.createProperty(constants::dispense_delays_property_name,constants::dispense_delays_default);
   dispense_delays_property.setRange(constants::dispense_delay_min,constants::dispense_delay_max);
@@ -77,7 +85,7 @@ void LickportArrayController::setup()
   dispense_counts_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
 
   modular_server::Property & activated_dispense_durations_property = modular_server_.createProperty(constants::activated_dispense_durations_property_name,constants::activated_dispense_durations_default);
-  activated_dispense_durations_property.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
+  activated_dispense_durations_property.setRange(constants::duration_min,constants::duration_max);
   activated_dispense_durations_property.setArrayLengthRange(constants::LICKPORT_COUNT,constants::LICKPORT_COUNT);
 
   // Parameters
@@ -89,7 +97,7 @@ void LickportArrayController::setup()
   lickports_parameter.setArrayLengthRange(constants::lickports_array_length_min,constants::lickport_count-1);
 
   modular_server::Parameter & dispense_duration_parameter = modular_server_.createParameter(constants::dispense_duration_parameter_name);
-  dispense_duration_parameter.setRange(constants::dispense_duration_min,constants::dispense_duration_max);
+  dispense_duration_parameter.setRange(constants::duration_min,constants::duration_max);
   dispense_duration_parameter.setUnits(digital_controller::constants::ms_units);
 
   modular_server::Parameter & dispense_durations_parameter = modular_server_.createParameter(constants::dispense_durations_parameter_name);
@@ -164,6 +172,9 @@ void LickportArrayController::setup()
   get_and_clear_lick_data_function.setResultTypeArray();
 
   // Callbacks
+  modular_server::Callback & calibrate_lick_sensor_callback = modular_server_.createCallback(constants::calibrate_lick_sensor_callback_name);
+  calibrate_lick_sensor_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::calibrateLickSensorHandler));
+
   modular_server::Callback & manage_lick_status_change_callback = modular_server_.createCallback(constants::manage_lick_status_change_callback_name);
   manage_lick_status_change_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::manageLickStatusChangeHandler));
   manage_lick_status_change_callback.attachTo(change_pin,modular_server::constants::pin_mode_interrupt_falling);
@@ -175,6 +186,7 @@ void LickportArrayController::setup()
   deactivate_all_lickports_callback.attachFunctor(makeFunctor((Functor1<modular_server::Pin *> *)0,*this,&LickportArrayController::deactivateAllLickportsHandler));
 
   setAllChannelsOff();
+  startSyncPwm();
 
   lick_sensor_.begin();
   lick_sensor_.reset();
@@ -189,6 +201,11 @@ void LickportArrayController::update()
   DigitalController::update();
 
   manageLickStatusChange();
+}
+
+void LickportArrayController::calibrateLickSensor()
+{
+  lick_sensor_.triggerCalibration();
 }
 
 void LickportArrayController::dispenseLickportForDuration(Lickport lickport,
@@ -310,26 +327,49 @@ double LickportArrayController::setChannelToPower(size_t lickport,
   if (power > digital_controller::constants::power_mid)
   {
     power = digital_controller::constants::power_max;
-    digitalWrite(constants::lickport_pins[lickport],HIGH);
+    digitalWrite(constants::channel_pins[lickport],HIGH);
   }
   else
   {
     power = digital_controller::constants::power_min;
-    digitalWrite(constants::lickport_pins[lickport],LOW);
+    digitalWrite(constants::channel_pins[lickport],LOW);
   }
   return power;
 }
 
-void LickportArrayController::startPwmHandler(int pwm_index)
+void LickportArrayController::startSyncPwm()
 {
-  DigitalController::startPwmHandler(pwm_index);
-  lickports_dispensing_ |= getPwmChannels(pwm_index);
+  Channels channels = (1 << constants::sync_channel);
+
+  long period_min;
+  modular_server::Property & sync_period_min_property = modular_server_.property(constants::sync_period_min_property_name);
+  sync_period_min_property.getValue(period_min);
+
+  long period_max;
+  modular_server::Property & sync_period_max_property = modular_server_.property(constants::sync_period_max_property_name);
+  sync_period_max_property.getValue(period_max);
+
+  long period = random(period_min,period_max) - constants::sync_delay;
+
+  long on_duration;
+  modular_server::Property & sync_on_duration_property = modular_server_.property(constants::sync_on_duration_property_name);
+  sync_on_duration_property.getValue(on_duration);
+
+  sync_pwm_id_ = addPwm(channels,
+    constants::dispense_power,
+    constants::sync_delay,
+    period,
+    on_duration,
+    constants::sync_count,
+    makeFunctor((Functor1<int> *)0,*this,&DigitalController::startPulseHandler),
+    makeFunctor((Functor1<int> *)0,*this,&DigitalController::stopPulseHandler),
+    makeFunctor((Functor1<int> *)0,*this,&DigitalController::startPwmHandler),
+    makeFunctor((Functor1<int> *)0,*this,&LickportArrayController::stopSyncPwmHandler));
 }
 
-void LickportArrayController::stopPwmHandler(int pwm_index)
+void LickportArrayController::stopSyncPwm()
 {
-  DigitalController::stopPwmHandler(pwm_index);
-  lickports_dispensing_ &= ~getPwmChannels(pwm_index);
+  stopPwm(sync_pwm_id_);
 }
 
 void LickportArrayController::dispense(Lickport lickport,
@@ -342,14 +382,18 @@ void LickportArrayController::dispense(Lickport lickport,
   {
     return;
   }
-  uint32_t lickport_channels = 0;
+  Channels lickport_channels = 0;
   lickport_channels |= (1 << lickport);
   addPwm(lickport_channels,
     constants::dispense_power,
     delay,
     period,
     duration,
-    count);
+    count,
+    makeFunctor((Functor1<int> *)0,*this,&DigitalController::startPulseHandler),
+    makeFunctor((Functor1<int> *)0,*this,&DigitalController::stopPulseHandler),
+    makeFunctor((Functor1<int> *)0,*this,&LickportArrayController::startLickportPwmHandler),
+    makeFunctor((Functor1<int> *)0,*this,&LickportArrayController::stopLickportPwmHandler));
 }
 
 void LickportArrayController::manageLickStatusChange()
@@ -415,6 +459,35 @@ void LickportArrayController::updateLickData(LickSensorStatus lick_sensor_status
 void LickportArrayController::clearLickData()
 {
   lick_data_.clear();
+}
+
+void LickportArrayController::setSyncPropertyHandler()
+{
+  stopAllPwm();
+  startSyncPwm();
+}
+
+void LickportArrayController::stopSyncPwmHandler(int pwm_index)
+{
+  DigitalController::stopPwmHandler(pwm_index);
+  startSyncPwm();
+}
+
+void LickportArrayController::startLickportPwmHandler(int pwm_index)
+{
+  DigitalController::startPwmHandler(pwm_index);
+  lickports_dispensing_ |= getPwmChannels(pwm_index);
+}
+
+void LickportArrayController::stopLickportPwmHandler(int pwm_index)
+{
+  DigitalController::stopPwmHandler(pwm_index);
+  lickports_dispensing_ &= ~getPwmChannels(pwm_index);
+}
+
+void LickportArrayController::calibrateLickSensorHandler(modular_server::Pin * pin_ptr)
+{
+  calibrateLickSensor();
 }
 
 void LickportArrayController::manageLickStatusChangeHandler(modular_server::Pin * pin_ptr)

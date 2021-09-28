@@ -16,10 +16,10 @@ namespace lickport_array_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=4};
+enum{PROPERTY_COUNT_MAX=7};
 enum{PARAMETER_COUNT_MAX=4};
 enum{FUNCTION_COUNT_MAX=12};
-enum{CALLBACK_COUNT_MAX=3};
+enum{CALLBACK_COUNT_MAX=4};
 
 extern ConstantString device_name;
 
@@ -32,6 +32,11 @@ extern const modular_server::HardwareInfo hardware_info;
 extern const double dispense_power;
 
 extern const long lickport_count;
+extern const long channel_count;
+
+extern const size_t sync_channel;
+extern const size_t sync_delay;
+extern const size_t sync_count;
 
 enum{LICK_DATUM_COUNT_MAX=100};
 
@@ -39,6 +44,9 @@ extern ConstantString lick_datum_time;
 extern ConstantString lick_datum_millis;
 extern ConstantString lick_datum_lickports_licked;
 extern ConstantString lick_datum_lickports_activated;
+
+extern const long duration_min;
+extern const long duration_max;
 
 // Pins
 extern ConstantString change_pin_name;
@@ -48,13 +56,19 @@ extern ConstantString lick_detected_pin_name;
 extern const size_t lick_detected_pin_number;
 extern const size_t lick_detected_pulse_duration;
 
-extern ConstantString sync_pin_name;
-extern const size_t sync_pin_number;
-
 // Units
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern ConstantString sync_period_min_property_name;
+extern const long sync_period_min_default;
+
+extern ConstantString sync_period_max_property_name;
+extern const long sync_period_max_default;
+
+extern ConstantString sync_on_duration_property_name;
+extern const long sync_on_duration_default;
+
 extern ConstantString dispense_delays_property_name;
 extern const long dispense_delay_min;
 extern const long dispense_delay_max;
@@ -81,8 +95,6 @@ extern ConstantString lickports_parameter_name;
 extern const long lickports_array_length_min;
 
 extern ConstantString dispense_duration_parameter_name;
-extern const long dispense_duration_min;
-extern const long dispense_duration_max;
 
 extern ConstantString dispense_durations_parameter_name;
 extern const long dispense_durations_array_length_min;
@@ -102,6 +114,7 @@ extern ConstantString deactivate_lickports_function_name;
 extern ConstantString get_and_clear_lick_data_function_name;
 
 // Callbacks
+extern ConstantString calibrate_lick_sensor_callback_name;
 extern ConstantString manage_lick_status_change_callback_name;
 extern ConstantString activate_all_lickports_callback_name;
 extern ConstantString deactivate_all_lickports_callback_name;

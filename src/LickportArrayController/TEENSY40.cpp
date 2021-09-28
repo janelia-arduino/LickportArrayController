@@ -22,8 +22,11 @@ const modular_server::HardwareInfo hardware_info =
 };
 
 const long lickport_count = LICKPORT_COUNT;
+const long channel_count = CHANNEL_COUNT;
 
-const size_t lickport_pins[LICKPORT_COUNT] =
+const size_t sync_channel = CHANNEL_COUNT - 1;
+
+const size_t channel_pins[CHANNEL_COUNT] =
 {
   0,
   1,
@@ -36,15 +39,14 @@ const size_t lickport_pins[LICKPORT_COUNT] =
   8,
   9,
   10,
-  11
+  11,
+  14
 };
 
 // Pins
 const size_t change_pin_number = 12;
 
 const size_t lick_detected_pin_number = 13;
-
-const size_t sync_pin_number = 14;
 
 // Units
 
