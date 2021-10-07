@@ -3,42 +3,88 @@
 #+EMAIL: peter@polidoro.io
 
 * Library Information
-  - Name :: LickportArrayController
-  - Version :: 0.1.0
-  - License :: BSD
-  - URL :: https://github.com/janelia-arduino/LickportArrayController
-  - Author :: Peter Polidoro
-  - Email :: peter@polidoro.io
+- Name :: LickportArrayController
+- Version :: 0.1.0
+- License :: BSD
+- URL :: https://github.com/janelia-arduino/LickportArrayController
+- Author :: Peter Polidoro
+- Email :: peter@polidoro.io
 
 ** Description
 
-   Modular device lickport array controller library.
+Modular device lickport array controller library.
 
 * API NAMES
 
-  #+BEGIN_SRC js
-  #+END_SRC
+#+BEGIN_SRC js
+
+{
+  "id": "getApi",
+  "result": {
+    "firmware": [
+      "LickportArrayController"
+    ],
+    "verbosity": "NAMES",
+    "functions": [
+      "dispenseLickportForDuration",
+      "dispenseLickportsForDuration",
+      "dispenseAllLickportsForDuration",
+      "dispenseLickportsForDurations",
+      "getActivatedLickports",
+      "activateOnlyLickport",
+      "activateOnlyLickports",
+      "activateLickport",
+      "activateLickports",
+      "deactivateLickport",
+      "deactivateLickports",
+      "getAndClearLickData"
+    ],
+    "parameters": [
+      "lickport",
+      "lickports",
+      "dispense_duration",
+      "dispense_durations"
+    ],
+    "properties": [
+      "syncOnDuration",
+      "syncPeriodMin",
+      "syncPeriodMax",
+      "dispenseDelays",
+      "dispensePeriods",
+      "dispenseCounts",
+      "activatedDispenseDurations"
+    ],
+    "callbacks": [
+      "calibrateLickSensor",
+      "manageLickStatusChange",
+      "activateAllLickports",
+      "deactivateAllLickports"
+    ]
+  }
+}
+
+#+END_SRC
 
 * API GENERAL
 
-  [[./api/]]
+[[./api/]]
 
 * Ancestors
 
-  [[https://github.com/janelia-arduino/ModularServer]]
+[[https://github.com/janelia-arduino/ModularServer]]
 
-  [[https://github.com/janelia-arduino/ModularDeviceBase]]
+[[https://github.com/janelia-arduino/ModularDeviceBase]]
 
 * Clients
 
 * Devices
 
-  [[https://github.com/janelia-modular-devices/modular_device_base]]
+[[https://github.com/janelia-modular-devices/modular_device_base]]
 
 * More Detailed Modular Device Information
 
-  [[https://github.com/janelia-modular-devices/modular-devices]]
+[[https://github.com/janelia-modular-devices/modular-devices]]
 
 * Installation Instructions
 
-  [[https://github.com/janelia-arduino/arduino-libraries]]
+[[https://github.com/janelia-arduino/arduino-libraries]]
