@@ -1,0 +1,31 @@
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v2
+
+      - name: Check out documentation repository
+        uses: actions/checkout@v2
+        with:
+          repository: https://github.com/janelia-arduino/GenerateModularDeviceDocumentation
+          path: GenerateModularDeviceDocumentation
+
+      - name: Install Emacs
+        run: sudo apt install emacs-nox --yes
+
+      - name: Build the site
+        run: ./GenerateModularDeviceDocumentation/build.sh
+
+      - name: Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: GenerateModularDeviceDocumentation/public
