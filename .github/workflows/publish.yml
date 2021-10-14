@@ -15,7 +15,7 @@ jobs:
       - name: Check out documentation repository
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/janelia-arduino/GenerateModularDeviceDocumentation
+          repository: janelia-arduino/GenerateModularDeviceDocumentation
           path: GenerateModularDeviceDocumentation
 
       - name: Install Emacs
