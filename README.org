@@ -14,6 +14,10 @@
 
 Modular device lickport array controller library.
 
+*** Webpage Documentation
+
+[[https://janelia-arduino.github.io/LickportArrayController/]]
+
 * API NAMES
 
 #+BEGIN_SRC js
