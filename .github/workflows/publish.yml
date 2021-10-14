@@ -21,6 +21,12 @@ jobs:
       - name: Install Emacs
         run: sudo apt install emacs-nox --yes
 
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+
       - name: Build the site
         run: ./GenerateModularDeviceDocumentation/build.sh
 
