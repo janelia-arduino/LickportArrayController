@@ -94,14 +94,14 @@ void LickportArrayController::setup()
 
   modular_server::Parameter & lickports_parameter = modular_server_.createParameter(constants::lickports_parameter_name);
   lickports_parameter.setRange(constants::lickport_min,constants::lickport_count-1);
-  lickports_parameter.setArrayLengthRange(constants::lickports_array_length_min,constants::lickport_count-1);
+  lickports_parameter.setArrayLengthRange(constants::lickports_array_length_min,constants::lickport_count);
 
   modular_server::Parameter & dispense_duration_parameter = modular_server_.createParameter(constants::dispense_duration_parameter_name);
   dispense_duration_parameter.setRange(constants::duration_min,constants::duration_max);
   dispense_duration_parameter.setUnits(digital_controller::constants::ms_units);
 
   modular_server::Parameter & dispense_durations_parameter = modular_server_.createParameter(constants::dispense_durations_parameter_name);
-  dispense_durations_parameter.setArrayLengthRange(constants::dispense_durations_array_length_min,constants::lickport_count-1);
+  dispense_durations_parameter.setArrayLengthRange(constants::dispense_durations_array_length_min,constants::lickport_count);
 
   setChannelCountHandler();
 

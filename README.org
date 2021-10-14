@@ -4,7 +4,7 @@
 
 * Library Information
 - Name :: LickportArrayController
-- Version :: 0.1.0
+- Version :: 0.1.1
 - License :: BSD
 - URL :: https://github.com/janelia-arduino/LickportArrayController
 - Author :: Peter Polidoro
