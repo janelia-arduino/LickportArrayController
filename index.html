@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-15 Fri 18:59 -->
+<!-- 2021-10-15 Fri 19:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Modular Device Documentation</title>
@@ -17,41 +17,65 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5d26284">API</a>
+<li><a href="#orga287696">API</a>
 <ul>
-<li><a href="#orgd66669e">Serial Terminal</a></li>
-<li><a href="#orgb8abe5f">Python</a></li>
+<li><a href="#org86ea82f">Serial Terminal</a></li>
+<li><a href="#orgd08247a">Python</a></li>
+<li><a href="#org7e5820f">Json</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5d26284" class="outline-2">
-<h2 id="org5d26284">API</h2>
-<div class="outline-text-2" id="text-org5d26284">
+<div id="outline-container-orga287696" class="outline-2">
+<h2 id="orga287696">API</h2>
+<div class="outline-text-2" id="text-orga287696">
 </div>
-<div id="outline-container-orgd66669e" class="outline-3">
-<h3 id="orgd66669e">Serial Terminal</h3>
-<div class="outline-text-3" id="text-orgd66669e">
+<div id="outline-container-org86ea82f" class="outline-3">
+<h3 id="org86ea82f">Serial Terminal</h3>
+<div class="outline-text-3" id="text-org86ea82f">
 <p>
 <a href="./terminal.html">Terminal</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb8abe5f" class="outline-3">
-<h3 id="orgb8abe5f">Python</h3>
-<div class="outline-text-3" id="text-orgb8abe5f">
+<div id="outline-container-orgd08247a" class="outline-3">
+<h3 id="orgd08247a">Python</h3>
+<div class="outline-text-3" id="text-orgd08247a">
 <p>
 <a href="./python.html">python</a>
 </p>
 </div>
 </div>
+
+<div id="outline-container-org7e5820f" class="outline-3">
+<h3 id="org7e5820f">Json</h3>
+<div class="outline-text-3" id="text-org7e5820f">
+<div class="org-src-container">
+<pre class="src src-python">
+<span style="font-weight: bold;">import</span> json
+
+<span style="font-weight: bold;">with</span> <span style="font-weight: bold;">open</span>(<span style="font-style: italic;">'../../api/api.json'</span>,<span style="font-style: italic;">'r'</span>) <span style="font-weight: bold;">as</span> f:
+    <span style="font-weight: bold; font-style: italic;">data</span> = json.load(f)
+
+<span style="font-weight: bold; font-style: italic;">api</span> = data[<span style="font-style: italic;">'result'</span>]
+<span style="font-weight: bold;">print</span>(api)
+
+</pre>
+</div>
+
+<pre class="example">
+{'ancestors': ['ModularServer', 'ModularDeviceBase', 'DigitalController'], 'firmware': [{'name': 'LickportArrayController', 'version': '0.1.1'}], 'verbosity': 'GENERAL', 'functions': [{'name': 'dispenseLickportForDuration', 'parameters': ['lickport', 'dispense_duration']}, {'name': 'dispenseLickportsForDuration', 'parameters': ['lickports', 'dispense_duration']}, {'name': 'dispenseAllLickportsForDuration', 'parameters': ['dispense_duration']}, {'name': 'dispenseLickportsForDurations', 'parameters': ['lickports', 'dispense_durations']}, {'name': 'getActivatedLickports', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'activateOnlyLickport', 'parameters': ['lickport'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'activateOnlyLickports', 'parameters': ['lickports'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'activateLickport', 'parameters': ['lickport'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'activateLickports', 'parameters': ['lickports'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'deactivateLickport', 'parameters': ['lickport'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'deactivateLickports', 'parameters': ['lickports'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getAndClearLickData', 'result_info': {'type': 'array', 'array_element_type': 'object'}}], 'parameters': [{'name': 'lickport', 'type': 'long'}, {'name': 'lickports', 'type': 'array', 'array_element_type': 'long'}, {'name': 'dispense_duration', 'type': 'long'}, {'name': 'dispense_durations', 'type': 'array', 'array_element_type': 'long'}], 'properties': [{'name': 'syncOnDuration', 'type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'long'}]}, {'name': 'syncPeriodMin', 'type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'long'}]}, {'name': 'syncPeriodMax', 'type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'long'}]}, {'name': 'dispenseDelays', 'type': 'array', 'array_element_type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValue', 'parameters': ['element_index', 'element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValueToDefault', 'parameters': ['element_index'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setAllElementValues', 'parameters': ['element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getArrayLength', 'result_info': {'type': 'long'}}, {'name': 'setArrayLength', 'parameters': ['array_length'], 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'array', 'array_element_type': 'long'}, {'name': 'element_index', 'type': 'long'}, {'name': 'element_value', 'type': 'long'}, {'name': 'array_length', 'type': 'long'}]}, {'name': 'dispensePeriods', 'type': 'array', 'array_element_type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValue', 'parameters': ['element_index', 'element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValueToDefault', 'parameters': ['element_index'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setAllElementValues', 'parameters': ['element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getArrayLength', 'result_info': {'type': 'long'}}, {'name': 'setArrayLength', 'parameters': ['array_length'], 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'array', 'array_element_type': 'long'}, {'name': 'element_index', 'type': 'long'}, {'name': 'element_value', 'type': 'long'}, {'name': 'array_length', 'type': 'long'}]}, {'name': 'dispenseCounts', 'type': 'array', 'array_element_type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValue', 'parameters': ['element_index', 'element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValueToDefault', 'parameters': ['element_index'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setAllElementValues', 'parameters': ['element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getArrayLength', 'result_info': {'type': 'long'}}, {'name': 'setArrayLength', 'parameters': ['array_length'], 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'array', 'array_element_type': 'long'}, {'name': 'element_index', 'type': 'long'}, {'name': 'element_value', 'type': 'long'}, {'name': 'array_length', 'type': 'long'}]}, {'name': 'activatedDispenseDurations', 'type': 'array', 'array_element_type': 'long', 'functions': [{'name': 'getValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValue', 'parameters': ['value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultValue', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setValueToDefault', 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValue', 'parameters': ['element_index', 'element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getDefaultElementValue', 'parameters': ['element_index'], 'result_info': {'type': 'long'}}, {'name': 'setElementValueToDefault', 'parameters': ['element_index'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'setAllElementValues', 'parameters': ['element_value'], 'result_info': {'type': 'array', 'array_element_type': 'long'}}, {'name': 'getArrayLength', 'result_info': {'type': 'long'}}, {'name': 'setArrayLength', 'parameters': ['array_length'], 'result_info': {'type': 'long'}}], 'parameters': [{'name': 'value', 'type': 'array', 'array_element_type': 'long'}, {'name': 'element_index', 'type': 'long'}, {'name': 'element_value', 'type': 'long'}, {'name': 'array_length', 'type': 'long'}]}], 'callbacks': [{'name': 'calibrateLickSensor', 'functions': [{'name': 'trigger'}, {'name': 'attachTo', 'parameters': ['pin_name', 'pin_mode']}, {'name': 'detachFrom', 'parameters': ['pin_name']}], 'parameters': [{'name': 'pin_name', 'type': 'string'}, {'name': 'pin_mode', 'type': 'string'}]}, {'name': 'manageLickStatusChange', 'functions': [{'name': 'trigger'}, {'name': 'attachTo', 'parameters': ['pin_name', 'pin_mode']}, {'name': 'detachFrom', 'parameters': ['pin_name']}], 'parameters': [{'name': 'pin_name', 'type': 'string'}, {'name': 'pin_mode', 'type': 'string'}]}, {'name': 'activateAllLickports', 'functions': [{'name': 'trigger'}, {'name': 'attachTo', 'parameters': ['pin_name', 'pin_mode']}, {'name': 'detachFrom', 'parameters': ['pin_name']}], 'parameters': [{'name': 'pin_name', 'type': 'string'}, {'name': 'pin_mode', 'type': 'string'}]}, {'name': 'deactivateAllLickports', 'functions': [{'name': 'trigger'}, {'name': 'attachTo', 'parameters': ['pin_name', 'pin_mode']}, {'name': 'detachFrom', 'parameters': ['pin_name']}], 'parameters': [{'name': 'pin_name', 'type': 'string'}, {'name': 'pin_mode', 'type': 'string'}]}]}
+
+</pre>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2021-10-15 Fri 18:59</p>
+<p class="date">Created: 2021-10-15 Fri 19:06</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 <p class="validation"></p>
 </div>
