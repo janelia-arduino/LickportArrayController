@@ -14,7 +14,7 @@
 
 Modular device lickport array controller library.
 
-*** Webpage Documentation
+* Webpage Documentation
 
 [[https://janelia-arduino.github.io/LickportArrayController/]]
 
@@ -25,8 +25,16 @@ Modular device lickport array controller library.
 {
   "id": "getApi",
   "result": {
+    "ancestors": [
+      "ModularServer",
+      "ModularDeviceBase",
+      "DigitalController"
+    ],
     "firmware": [
-      "LickportArrayController"
+      {
+        "name": "LickportArrayController",
+        "version": "0.1.1"
+      }
     ],
     "verbosity": "NAMES",
     "functions": [
@@ -69,26 +77,3 @@ Modular device lickport array controller library.
 
 #+END_SRC
 
-* API GENERAL
-
-[[./api/]]
-
-* Ancestors
-
-[[https://github.com/janelia-arduino/ModularServer]]
-
-[[https://github.com/janelia-arduino/ModularDeviceBase]]
-
-* Clients
-
-* Devices
-
-[[https://github.com/janelia-modular-devices/modular_device_base]]
-
-* More Detailed Modular Device Information
-
-[[https://github.com/janelia-modular-devices/modular-devices]]
-
-* Installation Instructions
-
-[[https://github.com/janelia-arduino/arduino-libraries]]
