@@ -1,27 +1,3 @@
-#+TITLE: LickportArrayController
-#+AUTHOR: Peter Polidoro
-#+EMAIL: peter@polidoro.io
-
-* Library Information
-- Name :: LickportArrayController
-- Version :: 0.1.1
-- License :: BSD
-- URL :: https://github.com/janelia-arduino/LickportArrayController
-- Author :: Peter Polidoro
-- Email :: peter@polidoro.io
-
-** Description
-
-Modular device lickport array controller library.
-
-* Webpage Documentation
-
-[[https://janelia-arduino.github.io/LickportArrayController/]]
-
-* API NAMES
-
-#+BEGIN_SRC js
-
 {
   "ancestors": [
     "ModularServer",
@@ -71,6 +47,3 @@ Modular device lickport array controller library.
     "deactivateAllLickports"
   ]
 }
-
-#+END_SRC
-
