@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-15 Fri 19:53 -->
+<!-- 2022-04-28 Thu 19:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Modular Device Documentation</title>
@@ -17,87 +17,44 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org20e422f">API</a>
+<li><a href="#org8e08f26">API</a>
 <ul>
-<li><a href="#org84e73ab">Serial Terminal</a></li>
-<li><a href="#orgfb2927a">Python</a></li>
+<li><a href="#org7bf2dfa">Serial Terminal</a></li>
+<li><a href="#org51efae7">Python</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <pre class="example">
-Python 3.8.12 (default, Sep 13 2021, 08:28:12) 
+Python 3.8.12 (default, Oct 18 2021, 14:07:50) 
 [GCC 9.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
-{
-  "ancestors": [
-    "ModularServer",
-    "ModularDeviceBase",
-    "DigitalController"
-  ],
-  "firmware": [
-    {
-      "name": "LickportArrayController",
-      "version": "0.1.1"
-    }
-  ],
-  "verbosity": "NAMES",
-  "functions": [
-    "dispenseLickportForDuration",
-    "dispenseLickportsForDuration",
-    "dispenseAllLickportsForDuration",
-    "dispenseLickportsForDurations",
-    "getActivatedLickports",
-    "activateOnlyLickport",
-    "activateOnlyLickports",
-    "activateLickport",
-    "activateLickports",
-    "deactivateLickport",
-    "deactivateLickports",
-    "getAndClearLickData"
-  ],
-  "parameters": [
-    "lickport",
-    "lickports",
-    "dispense_duration",
-    "dispense_durations"
-  ],
-  "properties": [
-    "syncOnDuration",
-    "syncPeriodMin",
-    "syncPeriodMax",
-    "dispenseDelays",
-    "dispensePeriods",
-    "dispenseCounts",
-    "activatedDispenseDurations"
-  ],
-  "callbacks": [
-    "calibrateLickSensor",
-    "manageLickStatusChange",
-    "activateAllLickports",
-    "deactivateAllLickports"
-  ]
-}
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/tmp/python-Y8QICx", line 4, in &lt;module&gt;
+    with open('../../api/names.json','r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '../../api/names.json'
 python.el: native completion setup loaded
+
 </pre>
 
-<div id="outline-container-org20e422f" class="outline-2">
-<h2 id="org20e422f">API</h2>
-<div class="outline-text-2" id="text-org20e422f">
+<div id="outline-container-org8e08f26" class="outline-2">
+<h2 id="org8e08f26">API</h2>
+<div class="outline-text-2" id="text-org8e08f26">
 </div>
-<div id="outline-container-org84e73ab" class="outline-3">
-<h3 id="org84e73ab">Serial Terminal</h3>
-<div class="outline-text-3" id="text-org84e73ab">
+<div id="outline-container-org7bf2dfa" class="outline-3">
+<h3 id="org7bf2dfa">Serial Terminal</h3>
+<div class="outline-text-3" id="text-org7bf2dfa">
 <p>
 <a href="./terminal.html">Terminal</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgfb2927a" class="outline-3">
-<h3 id="orgfb2927a">Python</h3>
-<div class="outline-text-3" id="text-orgfb2927a">
+<div id="outline-container-org51efae7" class="outline-3">
+<h3 id="org51efae7">Python</h3>
+<div class="outline-text-3" id="text-org51efae7">
 <p>
 <a href="./python.html">python</a>
 </p>
@@ -106,7 +63,7 @@ python.el: native completion setup loaded
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2021-10-15 Fri 19:53</p>
+<p class="date">Created: 2022-04-28 Thu 19:11</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 <p class="validation"></p>
 </div>
