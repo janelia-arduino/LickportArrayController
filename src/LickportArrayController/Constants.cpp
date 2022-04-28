@@ -19,9 +19,9 @@ CONSTANT_STRING(firmware_name,"LickportArrayController");
 const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
-  .version_major=0,
-  .version_minor=1,
-  .version_patch=1,
+  .version_major=1,
+  .version_minor=0,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"lickport_array_controller");
@@ -31,10 +31,10 @@ const double dispense_power = digital_controller::constants::power_max;
 const size_t sync_delay = 10;
 const size_t sync_count = 1;
 
-CONSTANT_STRING(lick_datum_time,"time");
-CONSTANT_STRING(lick_datum_millis,"millis");
-CONSTANT_STRING(lick_datum_lickports_licked,"lickports_licked");
-CONSTANT_STRING(lick_datum_lickports_activated,"lickports_activated");
+CONSTANT_STRING(saved_datum_time,"time");
+CONSTANT_STRING(saved_datum_millis,"millis");
+CONSTANT_STRING(saved_datum_lickports_licked,"lickports_licked");
+CONSTANT_STRING(saved_datum_lickports_activated,"lickports_activated");
 
 const long duration_min = 10;
 const long duration_max = 2000000000;
@@ -75,6 +75,9 @@ const long dispense_count_default = 1;
 CONSTANT_STRING(activated_dispense_durations_property_name,"activatedDispenseDurations");
 const long activated_dispense_duration_default = 500;
 
+CONSTANT_STRING(all_lickports_activated_initially_property_name,"allLickportsActivatedInitially");
+const bool all_lickports_activated_initially_default = false;
+
 // Parameters
 CONSTANT_STRING(lickport_parameter_name,"lickport");
 const long lickport_min = 0;
@@ -88,6 +91,7 @@ CONSTANT_STRING(dispense_durations_parameter_name,"dispense_durations");
 const long dispense_durations_array_length_min = 0;
 
 // Functions
+CONSTANT_STRING(get_lickport_count_function_name,"getLickportCount");
 CONSTANT_STRING(dispense_lickport_for_duration_function_name,"dispenseLickportForDuration");
 CONSTANT_STRING(dispense_lickports_for_duration_function_name,"dispenseLickportsForDuration");
 CONSTANT_STRING(dispense_lickports_for_durations_function_name,"dispenseLickportsForDurations");
@@ -99,7 +103,7 @@ CONSTANT_STRING(activate_lickport_function_name,"activateLickport");
 CONSTANT_STRING(activate_lickports_function_name,"activateLickports");
 CONSTANT_STRING(deactivate_lickport_function_name,"deactivateLickport");
 CONSTANT_STRING(deactivate_lickports_function_name,"deactivateLickports");
-CONSTANT_STRING(get_and_clear_lick_data_function_name,"getAndClearLickData");
+CONSTANT_STRING(get_and_clear_saved_data_function_name,"getAndClearSavedData");
 
 // Callbacks
 CONSTANT_STRING(calibrate_lick_sensor_callback_name,"calibrateLickSensor");

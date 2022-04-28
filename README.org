@@ -4,7 +4,7 @@
 
 * Library Information
 - Name :: LickportArrayController
-- Version :: 0.1.1
+- Version :: 1.0.0
 - License :: BSD
 - URL :: https://github.com/janelia-arduino/LickportArrayController
 - Author :: Peter Polidoro
@@ -23,53 +23,65 @@ Modular device lickport array controller library.
 #+BEGIN_SRC js
 
 {
-  "ancestors": [
-    "ModularServer",
-    "ModularDeviceBase",
-    "DigitalController"
-  ],
-  "firmware": [
-    {
-      "name": "LickportArrayController",
-      "version": "0.1.1"
+  "id": "?",
+  "result": {
+    "device_id": {
+      "name": "lickport_array_controller",
+      "form_factor": "TEENSY40",
+      "serial_number": 0
+    },
+    "api": {
+      "ancestors": [
+        "ModularServer",
+        "ModularDeviceBase",
+        "DigitalController"
+      ],
+      "firmware": [
+        {
+          "name": "LickportArrayController",
+          "version": "1.0.0"
+        }
+      ],
+      "verbosity": "NAMES",
+      "functions": [
+        "getLickportCount",
+        "dispenseLickportForDuration",
+        "dispenseLickportsForDuration",
+        "dispenseAllLickportsForDuration",
+        "dispenseLickportsForDurations",
+        "getActivatedLickports",
+        "activateOnlyLickport",
+        "activateOnlyLickports",
+        "activateLickport",
+        "activateLickports",
+        "deactivateLickport",
+        "deactivateLickports",
+        "getAndClearSavedData"
+      ],
+      "parameters": [
+        "lickport",
+        "lickports",
+        "dispense_duration",
+        "dispense_durations"
+      ],
+      "properties": [
+        "syncOnDuration",
+        "syncPeriodMin",
+        "syncPeriodMax",
+        "dispenseDelays",
+        "dispensePeriods",
+        "dispenseCounts",
+        "activatedDispenseDurations",
+        "allLickportsActivatedInitially"
+      ],
+      "callbacks": [
+        "calibrateLickSensor",
+        "manageLickStatusChange",
+        "activateAllLickports",
+        "deactivateAllLickports"
+      ]
     }
-  ],
-  "verbosity": "NAMES",
-  "functions": [
-    "dispenseLickportForDuration",
-    "dispenseLickportsForDuration",
-    "dispenseAllLickportsForDuration",
-    "dispenseLickportsForDurations",
-    "getActivatedLickports",
-    "activateOnlyLickport",
-    "activateOnlyLickports",
-    "activateLickport",
-    "activateLickports",
-    "deactivateLickport",
-    "deactivateLickports",
-    "getAndClearLickData"
-  ],
-  "parameters": [
-    "lickport",
-    "lickports",
-    "dispense_duration",
-    "dispense_durations"
-  ],
-  "properties": [
-    "syncOnDuration",
-    "syncPeriodMin",
-    "syncPeriodMax",
-    "dispenseDelays",
-    "dispensePeriods",
-    "dispenseCounts",
-    "activatedDispenseDurations"
-  ],
-  "callbacks": [
-    "calibrateLickSensor",
-    "manageLickStatusChange",
-    "activateAllLickports",
-    "deactivateAllLickports"
-  ]
+  }
 }
 
 #+END_SRC

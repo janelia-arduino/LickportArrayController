@@ -16,9 +16,9 @@ namespace lickport_array_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=7};
+enum{PROPERTY_COUNT_MAX=8};
 enum{PARAMETER_COUNT_MAX=4};
-enum{FUNCTION_COUNT_MAX=12};
+enum{FUNCTION_COUNT_MAX=13};
 enum{CALLBACK_COUNT_MAX=4};
 
 extern ConstantString device_name;
@@ -38,12 +38,12 @@ extern const size_t sync_channel;
 extern const size_t sync_delay;
 extern const size_t sync_count;
 
-enum{LICK_DATUM_COUNT_MAX=100};
+enum{SAVED_DATUM_COUNT_MAX=100};
 
-extern ConstantString lick_datum_time;
-extern ConstantString lick_datum_millis;
-extern ConstantString lick_datum_lickports_licked;
-extern ConstantString lick_datum_lickports_activated;
+extern ConstantString saved_datum_time;
+extern ConstantString saved_datum_millis;
+extern ConstantString saved_datum_lickports_licked;
+extern ConstantString saved_datum_lickports_activated;
 
 extern const long duration_min;
 extern const long duration_max;
@@ -87,6 +87,9 @@ extern const long dispense_count_default;
 extern ConstantString activated_dispense_durations_property_name;
 extern const long activated_dispense_duration_default;
 
+extern ConstantString all_lickports_activated_initially_property_name;
+extern const bool all_lickports_activated_initially_default;
+
 // Parameters
 extern ConstantString lickport_parameter_name;
 extern const long lickport_min;
@@ -100,6 +103,7 @@ extern ConstantString dispense_durations_parameter_name;
 extern const long dispense_durations_array_length_min;
 
 // Functions
+extern ConstantString get_lickport_count_function_name;
 extern ConstantString dispense_lickport_for_duration_function_name;
 extern ConstantString dispense_lickports_for_duration_function_name;
 extern ConstantString dispense_lickports_for_durations_function_name;
@@ -111,7 +115,7 @@ extern ConstantString activate_lickport_function_name;
 extern ConstantString activate_lickports_function_name;
 extern ConstantString deactivate_lickport_function_name;
 extern ConstantString deactivate_lickports_function_name;
-extern ConstantString get_and_clear_lick_data_function_name;
+extern ConstantString get_and_clear_saved_data_function_name;
 
 // Callbacks
 extern ConstantString calibrate_lick_sensor_callback_name;
